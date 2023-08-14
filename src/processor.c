@@ -23,25 +23,7 @@ extern Music *playlist;
 
 void process_none(char *request);
 
-FunctionProcessor func_processor[] = 
-{
-	[FN_NONE]             process_none,
-	[FN_QUIT]             process_quit,
-	[FN_HELP]             process_help,
-	[FN_UNKNOWN]          process_unknown,
-	[FN_RESUME]           process_resume,
-	[FN_PAUSE]            process_pause,
-	[FN_VOLUME]           process_volume,
-	[FN_NEXT]             process_next_music,
-	[FN_PREVIOUS]         process_previous_music,
-	[FN_SET_TIME]         process_set_time,
-	[FN_START]            process_start,
-	[FN_START_RAND]       process_start_random,
-	[FN_LOAD_MUSIC]       process_load_music,
-	[FN_LOAD_MUSIC_DIR]   process_load_music_directory,
-	[FN_LIST]             process_list,
-	[FN_INFO]             process_info,
-};
+extern FunctionProcessor func_processor[];
 
 void process_none(char *request)
 {

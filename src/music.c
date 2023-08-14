@@ -116,6 +116,11 @@ void play_music(Music music)
 	printf("\rPlaying %s\n", music.filename);
 }
 
+void stop_music(void)
+{
+	Mix_HaltMusic();
+}
+
 /**
  * Play the next music
  */

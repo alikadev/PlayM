@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <threads.h>
+#include <signal.h>
 
 #include <playmusic.h>
 
@@ -41,8 +42,13 @@ void app_init(const char *argv[])
 {
 	(void) argv;
 
+	// Ignore CTRL-C
+	signal(SIGINT, SIG_IGN);
+	
+	// Init audio device
 	init_audio_device();
 	
+	// Init rand
 	srand(time(NULL));
 }
 
@@ -55,7 +61,7 @@ void app_start(void)
 		(void) volume;
 		// Read the user input
 		printf("> ");
-		fgets(input, INPUT_SIZE, stdin);
+		scanf(" %[^\n]", input);
 		
 		// Transform the input in a Command
 		input[strcspn(input, "\n")] = 0;
@@ -66,11 +72,12 @@ void app_start(void)
 		debug("Function [%02X] (%s)\n", function, func_name[function]);
 		func_processor[function](input);
 	}
-
 }
 
 void app_quit(void)
 {
+	stop_music();
+
 	for (size_t i = 0; i < music_count; ++i)
 	{
 		free_music(playlist[i]);

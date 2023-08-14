@@ -73,6 +73,11 @@ void set_volume(float volume);
 void play_music(Music music);
 
 /**
+ * Stop playing music
+ */
+void stop_music(void);
+
+/**
  * Play the next music
  */
 void next_music(void);
@@ -93,6 +98,7 @@ void insert_playlist_in_dir(char *dirname, char *ext);
 
 typedef void (*FunctionProcessor)(char *request);
 
+void process_none(char *request);
 void process_unknown(char *request);
 void process_quit(char *request);
 void process_help(char *request);

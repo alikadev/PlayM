@@ -2,13 +2,33 @@
 
 #include <stdbool.h>
 
-bool running = true;
-bool playing = false;
+volatile bool running = true;
+volatile bool playing = false;
 int volume = MIX_MAX_VOLUME;
 
 size_t current_music;
 size_t music_count = 0;
 Music *playlist = NULL;
+
+FunctionProcessor func_processor[] = 
+{
+	[FN_NONE]             process_none,
+	[FN_QUIT]             process_quit,
+	[FN_HELP]             process_help,
+	[FN_UNKNOWN]          process_unknown,
+	[FN_RESUME]           process_resume,
+	[FN_PAUSE]            process_pause,
+	[FN_VOLUME]           process_volume,
+	[FN_NEXT]             process_next_music,
+	[FN_PREVIOUS]         process_previous_music,
+	[FN_SET_TIME]         process_set_time,
+	[FN_START]            process_start,
+	[FN_START_RAND]       process_start_random,
+	[FN_LOAD_MUSIC]       process_load_music,
+	[FN_LOAD_MUSIC_DIR]   process_load_music_directory,
+	[FN_LIST]             process_list,
+	[FN_INFO]             process_info,
+};
 
 char *func_name[] = {
 	[FN_NONE]             "FN_NONE",

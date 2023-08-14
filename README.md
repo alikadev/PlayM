@@ -4,6 +4,21 @@
 
 This application is a music player for your terminal. All your musics added to your playlist and listen in every environement (if you have a terminal with posix).
 
+# Application commands
+
+- `quit`
+- `help fn` (`fn` is not supported)
+- `resume`
+- `pause`
+- `vol vo` (between 0 and 100)
+- `set ti` (time in seconds)
+- `play`
+- `rand`
+- `load pa` (path of file)
+- `ldir pa` (path of directory) `ex` (extension)
+- `list`
+- `info`
+
 ## Previsions / TODO
 
 Theses are the previsions for the next versions
@@ -55,6 +70,15 @@ Everything is there, it works and is easy to use
 
 ## Version list
 
+### 0.1.1
+
+_Better stability and a bit of reformatting_
+
+- Fix some bugs
+  - Input handling crash
+  - Halt music before quitting
+- Ignore SIGINT
+
 ### 0.1.0 - First usable version
 
 _This version is really bad but it works..._
@@ -71,21 +95,6 @@ _This version is really bad but it works..._
 - Create command `rand`
 - Create command `info`
 
-#### Commands
-
-- `quit`
-- `help fn` (`fn` is not supported)
-- `resume`
-- `pause`
-- `vol vo` (between 0 and 100)
-- `set ti` (time in seconds)
-- `play`
-- `rand`
-- `load pa` (path of file)
-- `ldir pa` (path of directory) `ex` (extension)
-- `list`
-- `info`
-
 ### 0.0.5 - Musics
 
 _Listen and load musics!_
@@ -95,18 +104,6 @@ _Listen and load musics!_
 - Add command `prev`
 - Add command `list`
 
-#### Commands
-
-- `quit`
-- `play`
-- `pause`
-- `resume`
-- `vol vo` (between 0 and 100)
-- `load pa` (path of the directory) `ex` (extension)
-- `next`
-- `prev`
-- `list`
-
 ### 0.0.4 - SDL Mixer
 
 _Goodbye Raylib, welcome SDL Mixer!_
@@ -114,14 +111,6 @@ _Goodbye Raylib, welcome SDL Mixer!_
 - Remove command `stop`
 - Add command `vol`
 - Add a wrapper for each API (SDL Mixer) call.
-
-#### Commands
-
-- `quit`
-- `play`
-- `pause`
-- `resume`
-- `vol vo` (volume between 0 and 100)
 
 ### 0.0.3
 
@@ -140,14 +129,6 @@ _Play a predefined music!_
 - Add command `pause`
 - Add command `resume`
 
-#### Commands
-
-- `quit`
-- `play`
-- `stop`
-- `pause`
-- `resume`
-
 ### 0.0.1 - First version
 
 The "Hello world!" of the CLI/TLI app.
@@ -155,6 +136,4 @@ The "Hello world!" of the CLI/TLI app.
 - Read input from users
 - Check if the input is "`quit`"
   - Quit the app
-
-## TODO
 
