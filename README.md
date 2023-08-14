@@ -4,24 +4,50 @@
 
 This application is a music player for your terminal. All your musics added to your playlist and listen in every environement (if you have a terminal with posix).
 
-# Application commands
+
+<!-- ======================================== -->
+
+
+# Quick start
+
+## Building the application
+
+You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
+
+- Open a terminal
+- Do `git clone https://github.com/alikadev/PlayM.git && cd PlayM`
+- `make`
+
+## Run it
+
+- Open a terminal next to the `playm` binary
+- Do `./playm`
+- Use it!
+
+# General informations
+
+## Commands
 
 - `quit`
-- `help fn` (`fn` is not supported)
+- `help`
 - `resume`
 - `pause`
-- `vol vo` (between 0 and 100)
-- `set ti` (time in seconds)
+- `vol [vo]` (between 0 and 100)
+- `set [ti]` (time in seconds)
 - `play`
 - `rand`
-- `load pa` (path of file)
-- `ldir pa` (path of directory) `ex` (extension)
+- `load [pa]` (path of file)
+- `ldir [pa]` (path of directory) `[ex]` (extension)
 - `list`
 - `info`
 
-## Previsions / TODO
 
-Theses are the previsions for the next versions
+<!-- ======================================== -->
+
+
+## Previsions / TODOs
+
+Theses are the previsions for the next versions.
 
 ### (0.2.0) - Basic functionnalities
 
@@ -67,6 +93,10 @@ Add a GUI option to have a GUI
 Probablity: __--__
 
 Everything is there, it works and is easy to use
+
+
+<!-- ======================================== -->
+
 
 ## Version list
 
@@ -137,3 +167,10 @@ The "Hello world!" of the CLI/TLI app.
 - Check if the input is "`quit`"
   - Quit the app
 
+
+<!-- ======================================== -->
+
+
+# Contact me
+
+You can contact me via this address: dev@alikadev.com
