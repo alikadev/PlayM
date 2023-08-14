@@ -4,7 +4,6 @@
 
 This application is a music player for your terminal. All your musics added to your playlist and listen in every environement (if you have a terminal with posix).
 
-
 ## Previsions / TODO
 
 Theses are the previsions for the next versions
@@ -60,23 +59,32 @@ Everything is there, it works and is easy to use
 
 _This version is really bad but it works..._
 
+- Create the github page
+- Split project into multiple files
 - Simple terminal experience (crash because of fgets)
 - Single playlist
+- Rename command `load` `ldir`
+- Create command `load` (single file)
+- Create command `help` (implemented only global help)
+- Create command `set`
+- Create command `load`
+- Create command `rand`
+- Create command `info`
 
-Commands
+#### Commands
 
-- quit
-- help fn (fn is not supported)
-- resume
-- pause
-- vol vo (between 0 and 100)
-- set ti (time in seconds)
-- play
-- rand
-- load pa (path of file)
-- ldir pa (path of directory) ex (extension)
-- list
-- info
+- `quit`
+- `help fn` (`fn` is not supported)
+- `resume`
+- `pause`
+- `vol vo` (between 0 and 100)
+- `set ti` (time in seconds)
+- `play`
+- `rand`
+- `load pa` (path of file)
+- `ldir pa` (path of directory) `ex` (extension)
+- `list`
+- `info`
 
 ### 0.0.5 - Musics
 
@@ -87,60 +95,65 @@ _Listen and load musics!_
 - Add command `prev`
 - Add command `list`
 
-Commands
+#### Commands
 
-- quit
-- play
-- pause
-- resume
-- vol vo (between 0 and 100)
-- load pa (path of the directory) ex (extension)
-- next
-- prev 
-- list
+- `quit`
+- `play`
+- `pause`
+- `resume`
+- `vol vo` (between 0 and 100)
+- `load pa` (path of the directory) `ex` (extension)
+- `next`
+- `prev`
+- `list`
 
 ### 0.0.4 - SDL Mixer
 
 _Goodbye Raylib, welcome SDL Mixer!_
 
 - Remove command `stop`
-- Add command `vo`
-- 
+- Add command `vol`
 - Add a wrapper for each API (SDL Mixer) call.
 
-Commands
+#### Commands
 
-- quit
-- play
-- pause
-- resume
-- vol vo (between 0 and 100)
+- `quit`
+- `play`
+- `pause`
+- `resume`
+- `vol vo` (volume between 0 and 100)
 
 ### 0.0.3
 
-Loop the preloaded music
+_Loop the preloaded music_
+
+Yea, it's only loop it back...
 
 ### 0.0.2 - Music
 
 _Play a predefined music!_
 
 - Listen to music!
+- Add command `quit`
+- Add command `play`
+- Add command `stop`
+- Add command `pause`
+- Add command `resume`
 
-Commands
+#### Commands
 
-- quit
-- play
-- stop
-- pause
-- resume
-
+- `quit`
+- `play`
+- `stop`
+- `pause`
+- `resume`
 
 ### 0.0.1 - First version
 
 The "Hello world!" of the CLI/TLI app.
 
 - Read input from users
-- Check if the input is "quit"
+- Check if the input is "`quit`"
   - Quit the app
 
 ## TODO
