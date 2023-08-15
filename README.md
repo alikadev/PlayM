@@ -30,7 +30,7 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 
 - `quit`
 - `help`
-- `resume`
+- `play`
 - `pause`
 - `vol [vo]` (between 0 and 100)
 - `set [ti]` (time in seconds)
@@ -38,8 +38,8 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 - `rand`
 - `load [pa]` (path of file)
 - `ldir [pa]` (path of directory) `[ex]` (extension)
-- `list`
-- `info`
+- `playlist`
+- `music`
 
 
 <!-- ======================================== -->
@@ -99,6 +99,24 @@ Everything is there, it works and is easy to use
 
 
 ## Version list
+
+### 0.1.2 - Single playlist
+
+_Nothing visible, but a lot in the background_
+
+- Reformat of the codebase
+  - Better naming
+  - Reformat code-data relation
+- Rename `resume` to `play`
+- Rename `play` to `start`
+- Rename `list` to `playlist`
+- Rename `info` to `music`
+- Remove `help` coloring 
+  - (Because will be official during next weeks)
+- Remove `rand`
+- Create a REAL `Playlist` structure
+- Use `OrderedLinkedList` instead of dynamic array
+  - Remove Quicksort because `OrderedLinkedList` sort at insertion
 
 ### 0.1.1
 

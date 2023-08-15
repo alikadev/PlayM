@@ -1,5 +1,3 @@
-#define DEBUG
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,14 +8,13 @@
 #include <signal.h>
 
 #include <playmusic.h>
+#include <pm/debug.h>
 
 extern bool running;
 extern bool playing;
 extern int volume;
 
-extern size_t current_music;
-extern size_t music_count;
-extern Music *playlist;
+extern Playlist *playlist;
 
 extern char *func_name[];
 extern FunctionProcessor func_processor[];
@@ -26,34 +23,21 @@ void app_init(const char *argv[]);
 void app_start(void);
 void app_quit(void);
 
+
 int main(int argc, const char *argv[])
 {
 	(void) argc;
-
-	app_init(argv);
-
-	app_start();
-
-	app_quit();
-	return 0;
-}
-
-void app_init(const char *argv[])
-{
 	(void) argv;
 
-	// Ignore CTRL-C
+	/* Initialzation */
 	signal(SIGINT, SIG_IGN);
-	
-	// Init audio device
-	init_audio_device();
-	
-	// Init rand
 	srand(time(NULL));
-}
+	audio_player_initialize();
+	playlist = playlist_create("DEFAULT");
+	audio_player_attach_playlist(playlist);
 
-void app_start(void)
-{
+
+	/* Main loop */
 	char input[INPUT_SIZE];
 
 	while (running)
@@ -72,18 +56,21 @@ void app_start(void)
 		debug("Function [%02X] (%s)\n", function, func_name[function]);
 		func_processor[function](input);
 	}
-}
 
-void app_quit(void)
-{
-	stop_music();
 
-	for (size_t i = 0; i < music_count; ++i)
+	/* Terminate */
+	audio_player_halt_music();
+	
+	OrderedLinkedList *node = playlist->list;
+	while(node)
 	{
-		free_music(playlist[i]);
+		music_unload((Music*)node->elem);
+		node = node->next;
 	}
 
-	if(playlist)
-		free(playlist);
-	stop_audio_device();
+	audio_player_detach_playlist();
+	playlist_destroy(playlist);
+
+	audio_player_terminate();
+	return 0;
 }
