@@ -48,13 +48,12 @@ int main(int argc, const char *argv[])
 		scanf(" %[^\n]", input);
 		
 		// Transform the input in a Command
-		input[strcspn(input, "\n")] = 0;
-		char *sfn = strtok(input, " ");
-		Function function = str_to_function(sfn);
+		Command command; 
+		command_create(&command, input);
 
 		// Process the function
-		debug("Function [%02X] (%s)\n", function, func_name[function]);
-		func_processor[function](input);
+		func_processor[command.fn](command);
+		command_destroy(&command);
 	}
 
 

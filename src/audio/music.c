@@ -24,13 +24,27 @@ Music *music_load_from_file(char *filename)
 	Music *music = malloc(sizeof *music);
 	if(!music)
 		assert(0 && strerror(errno));
-	music->filename = malloc(strlen(filename) + 1);
+
+	// Load music
 	music->sample = Mix_LoadMUS(filename);
+	if(!music->sample)
+	{
+		printf("Fail to load the music: %s\n", SDL_GetError());
+		free(music);
+		return NULL;
+	}
+	
+	// Copy filename
+	music->filename = malloc(strlen(filename) + 1);
 	if(!music->filename)
 	{
 		printf("Fail to allocate the music: %s\n", strerror(errno));
+		Mix_FreeMusic(music->sample);
+		free(music);
+		return NULL;
 	}
 	strcpy(music->filename, filename);
+
 	return music;
 }
 
@@ -50,7 +64,7 @@ OrderedLinkedList *music_load_directory(char *dirname, char *ext)
 		if (dir->d_type != DT_REG)
 			continue;
 		char *dot = strrchr(dir->d_name, '.');
-		if (dot && (strcmp(dot+1, ext) == 0))
+		if ((dot && (strcmp(dot+1, ext) == 0)) || strcmp(ext, "*") == 0)
 		{
 			char *filename = malloc(strlen(dirname) + strlen(dir->d_name) + 2);
 			strcpy(filename, dirname);

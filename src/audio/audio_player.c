@@ -11,10 +11,17 @@ static AudioPlayer audioPlayer;
 void audio_player_initialize(void)
 {
 	debug("%s\n", __FUNCTION__);
+	SDL_Init(SDL_INIT_AUDIO);
+	Mix_Init(MIX_INIT_FLAC
+		   | MIX_INIT_MOD
+		   | MIX_INIT_MP3
+		   | MIX_INIT_OGG
+		   | MIX_INIT_MID
+		   | MIX_INIT_OPUS);
     if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512) < 0)
     	assert(0 && SDL_GetError());
 
-    if (Mix_AllocateChannels(4) < 0)
+    if (Mix_AllocateChannels(1) < 0)
     	assert(0 && SDL_GetError());
 
     audioPlayer.playlist = NULL;

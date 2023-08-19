@@ -1,6 +1,8 @@
 #ifndef PM_IO_COMMAND_H
 #define PM_IO_COMMAND_H
 
+#include <pm/list.h>
+
 typedef enum {
     FN_NONE = 0,         // No function, ignore
     FN_UNKNOWN,          // Unknown function, report error
@@ -22,9 +24,11 @@ typedef enum {
 
 typedef struct {
     Function fn;
-    char **args;
-    size_t arg_count;
+    LinkedList *tokens;
 } Command;
+
+void  command_create(Command *command, char *request);
+void  command_destroy(Command *command);
 
 Function str_to_function(char *functionName);
 

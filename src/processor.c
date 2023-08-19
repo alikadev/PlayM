@@ -19,30 +19,30 @@ extern char *func_name[];
 extern char *func_desc[];
 extern Playlist *playlist;
 
-void process_none(char *request);
+void process_none(Command command);
 
 extern FunctionProcessor func_processor[];
 
-void process_none(char *request)
+void process_none(Command command)
 {
-	(void) request;	
+	(void) command;	
 }
 
-void process_unknown(char *request)
+void process_unknown(Command command)
 {
-	(void) request;
-	printf("Unknown function: %s\n", request);
+	(void) command;
+	printf("Unknown function: %s\n", (char *)command.tokens->elem);
 }
 
-void process_quit(char *request)
+void process_quit(Command command)
 {
-	(void) request;
+	(void) command;
 	running = false;
 }
 
-void process_help(char *request)
+void process_help(Command command)
 {
-	(void) request;
+	(void) command;
 	printf("Command list:\n");
 	printfunc(FN_QUIT,           "",   "");
 	printfunc(FN_HELP,           "",   "");
@@ -59,101 +59,117 @@ void process_help(char *request)
 	printfarg("pa",              "is the path to the file or directory");
 	printfunc(FN_LOAD_MUSIC_DIR, "pa", "ex");
 	printfarg("pa",              "is the path to the file or directory");
-	printfarg("ex",              "is the file extension");
+	printfarg("ex",              "is the file extension (Optional, any = *)");
 	printfunc(FN_PLAYLIST,       "",   "");
 	printfunc(FN_MUSIC,          "",   "");
 }
 
-void process_play(char *request)
+void process_play(Command command)
 {
-	(void) request;
+	(void) command;
 	CHECK_PLAYLIST();
 	audio_player_play();
 }
 
-void process_pause(char *request)
+void process_pause(Command command)
 {
-	(void) request;
+	(void) command;
 	CHECK_PLAYLIST();
 	audio_player_pause();
 }
 
-void process_volume(char *request)
+void process_volume(Command command)
 {
-	char *arg = ARGOF(request, FN_VOLUME);
+	if(linked_list_size(command.tokens) != 2)
+	{
+		fprintf(stderr, "Usage: %s <vol>\n", func_name[command.fn]);
+		return;
+	}
+	char *sVol = linked_list_get(command.tokens, 1);
 
-	int percent = atoi(arg);
-	if (percent < 0) percent = 0;
-	else if (percent > 100) percent = 100;
+	int volPercent = atoi(sVol);
+	if      (volPercent < 0)   volPercent = 0;
+	else if (volPercent > 100) volPercent = 100;
 			
-	float volume = (float)percent / 100.f;
+	float volume = (float)volPercent / 100.f;
 			
 	printf("Volume level is %.2f\n", volume);
 	audio_player_set_volume(volume);
 }
 
-void process_set_time(char *request)
+void process_set_time(Command command)
 {
-	char *sPos = ARGOF(request, FN_SET_TIME);
-	if (sPos == NULL)
+	if(linked_list_size(command.tokens) != 2)
 	{
-		printf("Usage: %s <time>\n", func_name[FN_SET_TIME]);
+		fprintf(stderr, "Usage: %s <time>\n", func_name[command.fn]);
+		return;
 	}
+	char *sPos = linked_list_get(command.tokens, 1);
+
 	double pos = atof(sPos);
 	audio_player_seek(pos);
 }
 
-void process_next_music(char *request)
+void process_next_music(Command command)
 {
-	(void) request;
+	(void) command;
 	audio_player_play_next();
 }
 
-void process_previous_music(char *request)
+void process_previous_music(Command command)
 {
-	(void) request;
+	(void) command;
 	audio_player_play_prev();
 }
 
-void process_start(char *request)
+void process_start(Command command)
 {
-	(void) request;
+	(void) command;
 	CHECK_PLAYLIST();
 	audio_player_play_first();
 }
 
-void process_load_music(char *request)
+void process_load_music(Command command)
 {
-	char *filename = ARGOF(request, FN_LOAD_MUSIC);
-	playlist_insert_music(playlist, music_load_from_file(filename));
+	if(linked_list_size(command.tokens) != 2)
+	{
+		fprintf(stderr, "Usage: %s <filename>\n", func_name[command.fn]);
+		return;
+	}
+	char *filename = linked_list_get(command.tokens, 1);
+	Music *music = music_load_from_file(filename);
+	if(!music)
+		return;
+	playlist_insert_music(playlist, music);
 }
 
-void process_load_music_directory(char *request)
+void process_load_music_directory(Command command)
 {
-	char *dirname = ARGOF(request, FN_LOAD_MUSIC_DIR);
-	if (dirname == NULL)
+	size_t tokc = linked_list_size(command.tokens);
+	if(tokc != 2 && tokc != 3)
 	{
-		printf("Usage: %s <dirname> <ext>\n", func_name[FN_LOAD_MUSIC_DIR]);
+		fprintf(stderr, "Usage: %s <dirname> [<ext>]\n", func_name[command.fn]);
 		return;
 	}
-	char *ext = strtok(dirname, " ");
-	while (*ext)
-		ext++;
-	ext++;
-	if (ext == NULL)
-	{
-		printf("Usage: %s <dirname> <ext>\n", func_name[FN_LOAD_MUSIC_DIR]);
-		return;
-	}
+
+	char *dirname = linked_list_get(command.tokens, 1);
+	char *ext;
+	if (tokc == 3)
+		ext = linked_list_get(command.tokens, 2);
+	else
+		ext = "*";
+
 	OrderedLinkedList *musics = music_load_directory(dirname, ext);
+	if(!musics)
+		return;
 	playlist_insert_music_list(playlist, musics);
 	// Only destroy the list because the musics are now in the playlist
 	ordered_linked_list_destroy(musics);
 }
 
-void process_playlist(char *request)
+void process_playlist(Command command)
 {
-	(void) request;
+	(void) command;
 
 	printf("Playlist %s\n", playlist->name);
 	
@@ -167,9 +183,9 @@ void process_playlist(char *request)
 	}
 }
 
-void process_music(char *request)
+void process_music(Command command)
 {
-	(void) request;
+	(void) command;
 
 	if (playlist_size(playlist) != 0)
 	{

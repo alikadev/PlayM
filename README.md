@@ -100,6 +100,16 @@ Everything is there, it works and is easy to use
 
 ## Version list
 
+### 0.1.3
+
+_Stability and better command formatting_
+
+- Add commands (internally)
+- Command `load` support `*` or nothing as ext
+- Add support for `space` in path
+  - `"Example and more"`
+  - `Example\ and\ more`
+
 ### 0.1.2 - Single playlist
 
 _Nothing visible, but a lot in the background_
