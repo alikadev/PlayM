@@ -32,12 +32,12 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 - `help`
 - `play`
 - `pause`
-- `vol [vo]` (between 0 and 100)
-- `set [ti]` (time in seconds)
+- `vol vo` (between 0 and 100)
+- `set ti` (time in seconds)
 - `play`
 - `rand`
-- `load [pa]` (path of file)
-- `ldir [pa]` (path of directory) `[ex]` (extension)
+- `load pa` (path of file)
+- `ldir pa` (path of directory) `[ex]` (extension or \*, optional)
 - `playlist`
 - `music`
 
@@ -49,7 +49,7 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 
 Theses are the previsions for the next versions.
 
-### (0.2.0) - Basic functionnalities
+### (0.1.\*) - Basic functionnalities
 
 Probablity: __++__
 
@@ -59,19 +59,19 @@ Add all the basic functionnalities
 - Write/Save playlists
 - Support for terminal arguments
 
-### (0.3.0) - Advanced UI
+### (0.2.\*) - Advanced UI
 
 Probablity: __+__
 
 Advanced CLI or a basic TUI
 
-### (0.4.0) - Advanced UX
+### (0.3.\*) - Advanced UX
 
 Probablity: __~__
 
 Verify the user experience and upgrade it
 
-### (0.5.0) - Advanced functionnalities
+### (0.4.\*) - Advanced functionnalities
 
 Probablity: __~__
 
@@ -82,13 +82,7 @@ Advanced functionnalities (theses are only idea)
 - Scripting
 - Online communications (Spotify, SoundCloud, Youtube)
 
-### (0.6.0) - Simple graphical application
-
-Probablity: __-__
-
-Add a GUI option to have a GUI
-
-### (1.0.0) - First release
+### (1.0.0) - Official release
 
 Probablity: __--__
 
