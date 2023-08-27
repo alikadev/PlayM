@@ -45,7 +45,8 @@ Music *music_load_from_file(char *filename)
 	}
 	strcpy(music->filename, filename);
 	
-	// Copy music name (filename)
+	// Copy music name (filename without the extension)
+	*strrchr(filename, '.') = '\0';
 	music->name = malloc(strlen(filename) + 1);
 	if(!music->filename)
 	{

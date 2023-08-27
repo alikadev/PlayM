@@ -1,5 +1,5 @@
-#ifndef PM_PLAYLIST_H
-#define PM_PLAYLIST_H
+#ifndef PM_AUDIO_PLAYLIST_H
+#define PM_AUDIO_PLAYLIST_H
 
 #include <SDL2/SDL_mixer.h>
 #include <pm/sys/list.h>
@@ -16,5 +16,6 @@ void       playlist_insert_music(Playlist *playlist, Music *music);
 void       playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics);
 size_t     playlist_size(Playlist *playlist);
 Music *    playlist_get_by_order(Playlist *playlist, size_t number);
+int        playlist_save_to_m3u(Playlist *playlist, char *filename);
 
 #endif
