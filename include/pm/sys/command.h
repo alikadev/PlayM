@@ -1,5 +1,5 @@
-#ifndef PM_IO_COMMAND_H
-#define PM_IO_COMMAND_H
+#ifndef PM_SYS_COMMAND_H
+#define PM_SYS_COMMAND_H
 
 #include <pm/sys/list.h>
 

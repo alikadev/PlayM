@@ -1,5 +1,5 @@
-#ifndef PM_MUSIC_H
-#define PM_MUSIC_H
+#ifndef PM_AUDIO_MUSIC_H
+#define PM_AUDIO_MUSIC_H
 
 #include <pm/sys/list.h>
 #include <SDL2/SDL_mixer.h>
