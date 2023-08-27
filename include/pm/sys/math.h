@@ -1,6 +1,5 @@
-#include <playmusic.h>
-
-extern Playlist *playlist;
+#ifndef PM_SYS_MATH_H
+#define PM_SYS_MATH_H
 
 /**
  * Random value between the min and max
@@ -8,7 +7,6 @@ extern Playlist *playlist;
  * @param  max The maximal value
  * @return     The result
  */
-int rand_between(int min, int max)
-{
-	return (rand() % (max - min + 1)) + min;
-}
+int rand_between(int min, int max);
+
+#endif

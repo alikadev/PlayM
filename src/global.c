@@ -1,9 +1,11 @@
-#include <playmusic.h>
+#include <pm/audio.h>
+#include <pm/sys.h>
 
 #include <stdbool.h>
 
-volatile bool running = true;
-volatile bool playing = false;
+size_t INPUT_SIZE = 512;
+bool running = true;
+bool playing = false;
 int volume = MIX_MAX_VOLUME;
 
 Playlist *playlist = NULL;
@@ -23,8 +25,11 @@ FunctionProcessor func_processor[] =
 	[FN_SET_TIME]         process_set_time,
 	[FN_LOAD_MUSIC]       process_load_music,
 	[FN_LOAD_MUSIC_DIR]   process_load_music_directory,
+	[FN_UNLOAD_MUSIC]     process_unload_music,
 	[FN_PLAYLIST]         process_playlist,
 	[FN_MUSIC]            process_music,
+	[FN_RENAME_MUSIC]     process_rename_music,
+	[FN_RENAME_PLAYLIST]  process_rename_playlist,
 };
 
 char *func_name[] = {
@@ -41,8 +46,11 @@ char *func_name[] = {
 	[FN_SET_TIME]         "set",
 	[FN_LOAD_MUSIC]       "load",
 	[FN_LOAD_MUSIC_DIR]   "ldir",
-	[FN_PLAYLIST]         "playlist",
+	[FN_UNLOAD_MUSIC]     "rem",
+	[FN_PLAYLIST]         "list",
 	[FN_MUSIC]            "music",
+	[FN_RENAME_MUSIC]     "ren",
+	[FN_RENAME_PLAYLIST]  "renlist",
 };
 
 char *func_desc[] = {
@@ -59,6 +67,9 @@ char *func_desc[] = {
 	[FN_SET_TIME]         "Set the music position in second",
 	[FN_LOAD_MUSIC]       "Load a single music",
 	[FN_LOAD_MUSIC_DIR]   "Load a directory of music",
+	[FN_UNLOAD_MUSIC]     "Unload a music in the current playlist",
 	[FN_PLAYLIST]         "Print informations about the playlist",
 	[FN_MUSIC]            "Print informations about the music",
+	[FN_RENAME_MUSIC]     "Rename a music in the current playlist",
+	[FN_RENAME_PLAYLIST]  "Rename the current playlist",
 };

@@ -1,11 +1,13 @@
 #ifndef PM_MUSIC_H
 #define PM_MUSIC_H
 
-#include <pm/list.h>
+#include <pm/sys/list.h>
+#include <SDL2/SDL_mixer.h>
 
 typedef struct {
     Mix_Music *sample;
     char *filename;
+    char *name;
 } Music;
 
 Music *             music_load_from_file(char *filename);

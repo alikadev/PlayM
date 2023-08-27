@@ -1,14 +1,16 @@
-#include <pm/list.h>
+#include <pm/sys.h>
+#include <pm/debug.h>
 
-#include <string.h> // strerror()
-#include <errno.h> // errno
-#include <stdlib.h> // malloc(), free()
-#include <assert.h> // assert()
+#include <string.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <assert.h>
 
 extern int errno;
 
 OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *, void *))
 {
+	debugfn();
 	OrderedLinkedList *list = malloc(sizeof *list);
 	if(!list)
 		assert(0 && strerror(errno));
@@ -21,6 +23,7 @@ OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *,
 
 void ordered_linked_list_destroy(OrderedLinkedList *list)
 {
+	debugfn();
 	if(!list)
 		assert(0 && "Bad arg: ordered_linked_list_destroy 'list' argument is NULL!");
 		
@@ -29,8 +32,22 @@ void ordered_linked_list_destroy(OrderedLinkedList *list)
 	free(list);
 }
 
+void ordered_linked_list_destroy_purge(OrderedLinkedList *list)
+{
+	debugfn();
+	if(!list)
+		assert(0 && "Bad arg: ordered_linked_list_destroy_purge 'list' argument is NULL!");
+
+	free(list->elem);
+
+	if(list->next)
+		ordered_linked_list_destroy_purge(list->next);
+	free(list);
+}
+
 void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 {
+	debugfn();
 	if(!pList)
 		assert(0 && "Bad arg: ordered_linked_list_insert 'pList' argument is NULL!");
 	
@@ -62,8 +79,43 @@ void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 	node->next = newNode;
 }
 
+void *ordered_linked_list_remove(OrderedLinkedList **pList, size_t item)
+{
+	debugfn();
+	if(!pList)
+		assert(0 && "Bad arg: ordered_linked_list_remove 'pList' argument is NULL!");
+
+	if(!*pList)
+		assert(0 && "Bad arg: ordered_linked_list_remove 'pList' argument point to NULL!");
+
+	if(ordered_linked_list_size(*pList) <= item)
+		assert(0 && "Out of bounce check: ordered_linked_list_remove 'item' is greater than list size");
+
+	// Get the node to destroy and unlinked it
+	OrderedLinkedList *nodeToFree;
+	if(item == 0)
+	{
+		nodeToFree = *pList;
+		*pList = nodeToFree->next;
+	} else {
+		OrderedLinkedList *node = *pList;
+		for (unsigned i = 0; i < item - 1; i++)
+			node = node->next;
+
+		nodeToFree = node->next;
+		node->next = nodeToFree->next;
+	}
+
+	void *elem = nodeToFree->elem;
+	nodeToFree->next = NULL;
+	ordered_linked_list_destroy(nodeToFree);
+
+	return elem;
+}
+
 size_t ordered_linked_list_size(OrderedLinkedList *list)
 {
+	debugfn();
 	if(!list)
 		assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
 
@@ -79,6 +131,7 @@ size_t ordered_linked_list_size(OrderedLinkedList *list)
 
 void *ordered_linked_list_get(OrderedLinkedList *list, size_t item)
 {
+	debugfn();
 	if(!list)
 		assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
 

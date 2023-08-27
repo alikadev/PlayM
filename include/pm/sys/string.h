@@ -1,5 +1,5 @@
-#ifndef PLAYMUSIC_STRING_H
-#define PLAYMUSIC_STRING_H
+#ifndef PM_SYS_STRING_H
+#define PM_SYS_STRING_H
 
 char *ignore_spaces(char *str);
 

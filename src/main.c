@@ -7,8 +7,11 @@
 #include <threads.h>
 #include <signal.h>
 
-#include <playmusic.h>
+#include <pm/sys.h>
+#include <pm/audio.h>
 #include <pm/debug.h>
+
+extern size_t INPUT_SIZE;
 
 extern bool running;
 extern bool playing;
@@ -23,11 +26,12 @@ void app_init(const char *argv[]);
 void app_start(void);
 void app_quit(void);
 
-
 int main(int argc, const char *argv[])
 {
 	(void) argc;
 	(void) argv;
+
+	debugfn();
 
 	/* Initialzation */
 	signal(SIGINT, SIG_IGN);

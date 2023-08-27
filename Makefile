@@ -23,6 +23,11 @@ debug: debug_before all
 debug_before:
 	@printf "\e[1;32mBuilding\e[0m with \e[1;31mdebug\e[0m flags\n"
 
+trace: CFLAGS += -DDEBUG -DDEBUG_TRACE -g
+trace: trace_before all
+trace_before:
+	@printf "\e[1;32mBuilding\e[0m with \e[1;31mdebug\e[0m and \e[1;31mtrace\e[0m flags\n"
+
 $(OUT) : $(OBJ_C)
 	@printf "\e[1;32m  Building\e[0m $(notdir $@)\n"
 	@$(LD) $(OBJ_C) -o $@ $(LDFLAGS)

@@ -32,15 +32,19 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 - `help`
 - `play`
 - `pause`
-- `vol vo` (between 0 and 100)
-- `set ti` (time in seconds)
+- `vol volume`
+- `set time`
 - `play`
-- `rand`
-- `load pa` (path of file)
-- `ldir pa` (path of directory) `[ex]` (extension or \*, optional)
-- `playlist`
+- `load path`
+- `ldir path` `[ext]`
+- `list`
 - `music`
+- `ren`
+- `renlist`
 
+## File format
+
+PlayM uses the `M3U` format to save its playlists.
 
 <!-- ======================================== -->
 
@@ -93,6 +97,17 @@ Everything is there, it works and is easy to use
 
 
 ## Version list
+
+### 0.1.4
+
+_More commands and bug fixing_
+
+- Create command `ren`
+- Create command `renlist`
+- Rename command `playlist` to `list`
+- Add a _trace_ building mode
+- Fix bug
+  - Linked list remove
 
 ### 0.1.3
 

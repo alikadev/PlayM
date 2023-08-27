@@ -1,4 +1,5 @@
 #include <pm/audio/playlist.h>
+#include <pm/debug.h>
 
 #include <assert.h> // assert()
 #include <string.h> // strerror()
@@ -9,6 +10,7 @@ extern int errno;
 
 Playlist *playlist_create(const char *name)
 {
+	debugfn();
 	Playlist *playlist = malloc(sizeof *playlist);
 	if(!playlist)
 		assert(0 && strerror(errno));
@@ -24,6 +26,7 @@ Playlist *playlist_create(const char *name)
 
 void playlist_destroy(Playlist *playlist)
 {
+	debugfn();
 	if(!playlist)
 		assert(0 && "Bad arg: playlist_destroy 'playlist' argument is NULL");
 
@@ -38,6 +41,7 @@ void playlist_destroy(Playlist *playlist)
 
 void playlist_insert_music(Playlist *playlist, Music *music)
 {
+	debugfn();
 	if(!playlist)
 		assert(0 && "Bad arg: playlist_insert_music 'playlist' argument is NULL");
 
@@ -53,7 +57,8 @@ void playlist_insert_music(Playlist *playlist, Music *music)
 }
 
 void playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics)
-{	
+{
+	debugfn();	
 	for (unsigned i = 0; i < ordered_linked_list_size(musics); i++)
 	{
 		playlist_insert_music(playlist, ordered_linked_list_get(musics, i));
@@ -62,6 +67,7 @@ void playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics)
 
 size_t playlist_size(Playlist *playlist)
 {
+	debugfn();
 	if(!playlist)
 		assert(0 && "Bad arg: playlist_size 'playlist' argument is NULL");
 
@@ -73,6 +79,7 @@ size_t playlist_size(Playlist *playlist)
 
 Music *playlist_get_by_order(Playlist *playlist, size_t number)
 {
+	debugfn();
 	if(playlist_size(playlist) <= number)
 		assert(0 && "Out of bounce: playlist_size 'number' is greater than playlist size");
 

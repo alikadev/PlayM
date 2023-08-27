@@ -10,7 +10,7 @@ static AudioPlayer audioPlayer;
 
 void audio_player_initialize(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	SDL_Init(SDL_INIT_AUDIO);
 	Mix_Init(MIX_INIT_FLAC
 		   | MIX_INIT_MOD
@@ -33,7 +33,7 @@ void audio_player_initialize(void)
 
 void audio_player_terminate(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
     Mix_CloseAudio();
     Mix_Quit();
     SDL_Quit();
@@ -43,7 +43,7 @@ void audio_player_terminate(void)
 
 void audio_player_attach_playlist(Playlist *playlist)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	if(!playlist)
 		assert(0 && "Bad arg: audio_player_attach_playlist 'playlist' argument is NULL");
 
@@ -52,12 +52,13 @@ void audio_player_attach_playlist(Playlist *playlist)
 
 void audio_player_detach_playlist(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	audioPlayer.playlist = NULL;
 }
 
 void audio_player_play_music(void)
 {
+	debugfn();
 	Music *music = playlist_get_by_order(audioPlayer.playlist, audioPlayer.currentMusic);
 	debug("MUSIC = %s\n", music->filename);
 	if (Mix_PlayMusic(music->sample, 0) < 0)
@@ -66,7 +67,7 @@ void audio_player_play_music(void)
 
 void audio_player_play(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	if(!audio_player_is_ready())
 		assert(0 && "Internal error: audio_player_play_first musicPlayer is not ready");
 
@@ -83,7 +84,7 @@ void audio_player_play(void)
 
 void audio_player_play_first(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	if(!audio_player_is_ready())
 		assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
 
@@ -96,7 +97,7 @@ void audio_player_play_first(void)
 
 void audio_player_play_next(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	if(!audio_player_is_ready())
 		assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
 
@@ -110,7 +111,7 @@ void audio_player_play_next(void)
 
 void audio_player_play_prev(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	if(!audio_player_is_ready())
 		assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
 
@@ -125,51 +126,54 @@ void audio_player_play_prev(void)
 
 void audio_player_halt_music(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	Mix_HaltMusic();
 }
 
 void audio_player_pause(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	Mix_PauseMusic();
 }
 
 void  audio_player_seek(double seconds)
 {
+	debugfn();
 	Mix_SetMusicPosition(seconds);
 }
 
 void  audio_player_set_volume(float volume)
 {
+	debugfn();
 	Mix_VolumeMusic(volume * MIX_MAX_VOLUME);
 }
 
 bool audio_player_is_ready(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	return audioPlayer.state & AP_STATE_READY;
 }
 
 bool audio_player_is_playlist_attached(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	return audioPlayer.playlist;
 }
 
 bool audio_player_is_playing(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	return Mix_PlayingMusic();
 }
 
 bool audio_player_is_paused(void)
 {
-	debug("%s\n", __FUNCTION__);
+	debugfn();
 	return Mix_PausedMusic();
 }
 
 size_t audio_player_current_music_id(void)
 {
+	debugfn();
 	return audioPlayer.currentMusic;
 }

@@ -1,9 +1,9 @@
 #ifndef PM_PLAYLIST_H
 #define PM_PLAYLIST_H
 
-#include <SDL2/SDL_mixer.h> // Mix_Music
-#include <pm/list.h> // OrderedLinkedList
-#include <pm/audio/music.h> // Music
+#include <SDL2/SDL_mixer.h>
+#include <pm/sys/list.h>
+#include <pm/audio/music.h>
 
 typedef struct {
 	OrderedLinkedList *list;

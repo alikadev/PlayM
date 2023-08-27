@@ -1,5 +1,6 @@
-#include <pm/io/command.h>
+#include <pm/sys.h>
 #include <pm/debug.h>
+
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
@@ -11,6 +12,7 @@ extern char *func_name[];
 
 Function str_to_function(char *functionName)
 {
+	debugfn();
 	if (strlen(functionName) == 0)
 		return FN_NONE;
 	if (streq(functionName, func_name[FN_QUIT]))
@@ -31,6 +33,8 @@ Function str_to_function(char *functionName)
 		return FN_LOAD_MUSIC;
 	if (streq(functionName, func_name[FN_LOAD_MUSIC_DIR]))
 		return FN_LOAD_MUSIC_DIR;
+	if (streq(functionName, func_name[FN_UNLOAD_MUSIC]))
+		return FN_UNLOAD_MUSIC;
 	if (streq(functionName, func_name[FN_PLAYLIST]))
 		return FN_PLAYLIST;
 	if (streq(functionName, func_name[FN_MUSIC]))
@@ -39,11 +43,16 @@ Function str_to_function(char *functionName)
 		return FN_NEXT;
 	if (streq(functionName, func_name[FN_PREVIOUS]))
 		return FN_PREVIOUS;
+	if (streq(functionName, func_name[FN_RENAME_MUSIC]))
+		return FN_RENAME_MUSIC;
+	if (streq(functionName, func_name[FN_RENAME_PLAYLIST]))
+		return FN_RENAME_PLAYLIST;
 	return FN_UNKNOWN;
 }
 
 void command_create(Command *command, char *request)
 {
+	debugfn();
 	if(!command)
 		assert(0 && "Bad arg: command_create 'command' argument is NULL!");
 	if(!request)
@@ -60,7 +69,6 @@ void command_create(Command *command, char *request)
 	// Find all the tokens
 	while(*request)
 	{
-		printf("%c%c %s\n", backslash ? 'B' : ' ', quote ? 'Q' : ' ', request);
 		if ((quote && *request == '"')
 		 || (!quote && !backslash && isspace(*request) && strlen(buffer) > 0))
 		{
@@ -112,6 +120,7 @@ void command_create(Command *command, char *request)
 
 void command_destroy(Command *command)
 {
+	debugfn();
 	if(!command)
 		assert(0 && "Bad arg: command_destroy 'command' argument is NULL!");
 
