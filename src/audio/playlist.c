@@ -85,3 +85,25 @@ Music *playlist_get_by_order(Playlist *playlist, size_t number)
 
 	return (Music *)ordered_linked_list_get(playlist->list, number);
 }
+
+int playlist_save_to_m3u(Playlist *playlist, char *filename)
+{
+	FILE *file = fopen(filename, "wb");
+	if(!file)
+		return errno;
+
+	fprintf(file, "#EXTM3U\r\n");
+	fprintf(file, "#PLAYLIST:%s\r\n", playlist->name);
+
+	size_t len = ordered_linked_list_size(playlist->list);
+	for(size_t i = 0; i < len; ++i)
+	{
+		Music *music = (Music*)ordered_linked_list_get(playlist->list, i);
+		fprintf(file, "#EXTINF:0,%s\r\n", music->name);
+		fprintf(file, "%s\r\n", music->filename);
+	}
+
+	fclose(file);
+
+	return 0;
+}

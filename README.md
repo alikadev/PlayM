@@ -98,6 +98,11 @@ Everything is there, it works and is easy to use
 
 ## Version list
 
+### 0.1.5 (devel)
+
+- Change the default music name (remove extension)
+- Create command `save` (to save to m3u)
+
 ### 0.1.4
 
 _More commands and bug fixing_

@@ -90,6 +90,8 @@ printf("  %-8s"               \
 	printfarg("na",               "is the new music name");
 	printfunc(FN_RENAME_PLAYLIST, "na", "");
 	printfarg("na",               "if the new playlist name");
+	printfunc(FN_SAVE_PLAYLIST,   "pa", "");
+	printfarg("pa",               "is the file path (with extension)");
 }
 
 void process_play(Command command)
@@ -295,4 +297,20 @@ void process_rename_playlist(Command command)
 	playlist->name = malloc(strlen(name) + 1);
 	assert(playlist->name && "Internal error: malloc returned NULL");
 	strcpy(playlist->name, name);
+}
+
+
+void process_save_playlist(Command command)
+{
+	debugfn();
+	if(linked_list_size(command.tokens) != 2)
+	{
+		fprintf(stderr, "Usage: %s <path>\n", func_name[command.fn]);
+		return;
+	}
+
+	char *path = linked_list_get(command.tokens, 1);
+	debug("SavePlaylist(path=%s)\n", path);
+
+	playlist_save_to_m3u(playlist, path);
 }

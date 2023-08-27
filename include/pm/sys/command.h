@@ -22,6 +22,7 @@ typedef enum {
     FN_MUSIC,            // Print informations about the music
     FN_RENAME_MUSIC,     // Rename a music
     FN_RENAME_PLAYLIST,  // Rename the current playlist
+    FN_SAVE_PLAYLIST,  // Rename the current playlist
 } Function;
 
 
@@ -57,5 +58,6 @@ void process_playlist(Command command);
 void process_music(Command command);
 void process_rename_music(Command command);
 void process_rename_playlist(Command command);
+void process_save_playlist(Command command);
 
 #endif
