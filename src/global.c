@@ -46,12 +46,12 @@ char *func_name[] = {
 	[FN_VOLUME]           "vol",
 	[FN_SET_TIME]         "set",
 	[FN_LOAD_MUSIC]       "load",
-	[FN_LOAD_MUSIC_DIR]   "ldir",
+	[FN_LOAD_MUSIC_DIR]   "loadd",
 	[FN_UNLOAD_MUSIC]     "rem",
-	[FN_PLAYLIST]         "list",
-	[FN_MUSIC]            "music",
+	[FN_PLAYLIST]         "showp",
+	[FN_MUSIC]            "showm",
 	[FN_RENAME_MUSIC]     "ren",
-	[FN_RENAME_PLAYLIST]  "renlist",
+	[FN_RENAME_PLAYLIST]  "renp",
 	[FN_SAVE_PLAYLIST]    "save",
 };
 
