@@ -47,6 +47,10 @@ Function str_to_function(char *functionName)
 		return FN_RENAME_MUSIC;
 	if (streq(functionName, func_name[FN_RENAME_PLAYLIST]))
 		return FN_RENAME_PLAYLIST;
+	if (streq(functionName, func_name[FN_SAVE_PLAYLIST]))
+		return FN_SAVE_PLAYLIST;
+	if (streq(functionName, func_name[FN_LOAD_PLAYLIST]))
+		return FN_LOAD_PLAYLIST;
 	return FN_UNKNOWN;
 }
 

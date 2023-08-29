@@ -30,17 +30,22 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 
 - `quit`
 - `help`
+- `start`
+- `next`
+- `prev`
 - `play`
 - `pause`
 - `vol volume`
 - `set time`
-- `play`
 - `load path`
-- `ldir path` `[ext]`
-- `list`
-- `music`
-- `ren`
-- `renlist`
+- `loadd path [ext]`
+- `rem id`
+- `showp`
+- `showm`
+- `renm id name`
+- `renp playlist`
+- `save filename`
+- `loadp filename`
 
 ## File format
 
@@ -97,6 +102,18 @@ Everything is there, it works and is easy to use
 
 
 ## Version list
+
+### 0.1.5 (devel)
+
+_Save and load your playlists_
+
+- Change the default music name (remove extension)
+- Create command `save` (to save to m3u)
+- Create command `loadp` (to load a m3u playlist)
+- Rename command `ldir` to `loadd`
+- Rename command `list` to `showp`
+- Rename command `music` to `showm`
+- Rename command `renlist` to `renp`
 
 ### 0.1.4
 

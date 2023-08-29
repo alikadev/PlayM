@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
-#include <threads.h>
+#include <time.h>
 #include <signal.h>
 
 #include <pm/sys.h>
@@ -25,6 +22,7 @@ extern FunctionProcessor func_processor[];
 void app_init(const char *argv[]);
 void app_start(void);
 void app_quit(void);
+
 
 int main(int argc, const char *argv[])
 {

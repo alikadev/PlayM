@@ -1,5 +1,5 @@
-#ifndef PM_IO_COMMAND_H
-#define PM_IO_COMMAND_H
+#ifndef PM_SYS_COMMAND_H
+#define PM_SYS_COMMAND_H
 
 #include <pm/sys/list.h>
 
@@ -22,6 +22,8 @@ typedef enum {
     FN_MUSIC,            // Print informations about the music
     FN_RENAME_MUSIC,     // Rename a music
     FN_RENAME_PLAYLIST,  // Rename the current playlist
+    FN_SAVE_PLAYLIST,    // Save the current playlist (m3u)
+    FN_LOAD_PLAYLIST,    // Load a playlist (m3u)
 } Function;
 
 
@@ -57,5 +59,7 @@ void process_playlist(Command command);
 void process_music(Command command);
 void process_rename_music(Command command);
 void process_rename_playlist(Command command);
+void process_save_playlist(Command command);
+void process_load_playlist(Command command);
 
 #endif

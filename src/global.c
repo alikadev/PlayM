@@ -30,6 +30,8 @@ FunctionProcessor func_processor[] =
 	[FN_MUSIC]            process_music,
 	[FN_RENAME_MUSIC]     process_rename_music,
 	[FN_RENAME_PLAYLIST]  process_rename_playlist,
+	[FN_SAVE_PLAYLIST]    process_save_playlist,
+	[FN_LOAD_PLAYLIST]    process_load_playlist,
 };
 
 char *func_name[] = {
@@ -45,12 +47,14 @@ char *func_name[] = {
 	[FN_VOLUME]           "vol",
 	[FN_SET_TIME]         "set",
 	[FN_LOAD_MUSIC]       "load",
-	[FN_LOAD_MUSIC_DIR]   "ldir",
+	[FN_LOAD_MUSIC_DIR]   "loadd",
 	[FN_UNLOAD_MUSIC]     "rem",
-	[FN_PLAYLIST]         "list",
-	[FN_MUSIC]            "music",
+	[FN_PLAYLIST]         "showp",
+	[FN_MUSIC]            "showm",
 	[FN_RENAME_MUSIC]     "ren",
-	[FN_RENAME_PLAYLIST]  "renlist",
+	[FN_RENAME_PLAYLIST]  "renp",
+	[FN_SAVE_PLAYLIST]    "save",
+	[FN_LOAD_PLAYLIST]    "loadp",
 };
 
 char *func_desc[] = {
@@ -72,4 +76,6 @@ char *func_desc[] = {
 	[FN_MUSIC]            "Print informations about the music",
 	[FN_RENAME_MUSIC]     "Rename a music in the current playlist",
 	[FN_RENAME_PLAYLIST]  "Rename the current playlist",
+	[FN_SAVE_PLAYLIST]    "Save the current playlist",
+	[FN_LOAD_PLAYLIST]    "Load a M3U playlist and destroy the old one",
 };

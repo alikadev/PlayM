@@ -90,6 +90,10 @@ printf("  %-8s"               \
 	printfarg("na",               "is the new music name");
 	printfunc(FN_RENAME_PLAYLIST, "na", "");
 	printfarg("na",               "if the new playlist name");
+	printfunc(FN_SAVE_PLAYLIST,   "pa", "");
+	printfarg("pa",               "is the file path (with extension)");
+	printfunc(FN_SAVE_PLAYLIST,   "pa", "");
+	printfarg("pa",               "is the file path");
 }
 
 void process_play(Command command)
@@ -295,4 +299,51 @@ void process_rename_playlist(Command command)
 	playlist->name = malloc(strlen(name) + 1);
 	assert(playlist->name && "Internal error: malloc returned NULL");
 	strcpy(playlist->name, name);
+}
+
+
+void process_save_playlist(Command command)
+{
+	debugfn();
+	if(linked_list_size(command.tokens) != 2)
+	{
+		fprintf(stderr, "Usage: %s <path>\n", func_name[command.fn]);
+		return;
+	}
+
+	char *path = linked_list_get(command.tokens, 1);
+	debug("SavePlaylist(path=%s)\n", path);
+
+	playlist_save_m3u(playlist, path);
+}
+
+void process_load_playlist(Command command)
+{
+	debugfn();
+	if(linked_list_size(command.tokens) != 2)
+	{
+		fprintf(stderr, "Usage: %s <path>\n", func_name[command.fn]);
+		return;
+	}
+
+	char *path = linked_list_get(command.tokens, 1);
+	debug("LoadPlaylist(path=%s)\n", path);
+
+	Playlist *p = playlist_load_m3u(path);
+	if (p)
+	{
+		OrderedLinkedList *node = playlist->list;
+		while(node)
+		{
+			music_unload((Music*)node->elem);
+			node = node->next;
+		}
+
+		playlist_destroy(playlist);
+		playlist = p;
+
+		audio_player_attach_playlist(playlist);
+
+		printf("The new playlist is successfully loaded\n");
+	}
 }
