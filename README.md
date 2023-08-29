@@ -105,6 +105,8 @@ Everything is there, it works and is easy to use
 
 ### 0.1.5 (devel)
 
+_Save and load your playlists_
+
 - Change the default music name (remove extension)
 - Create command `save` (to save to m3u)
 - Create command `loadp` (to load a m3u playlist)
