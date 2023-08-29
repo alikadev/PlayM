@@ -23,6 +23,7 @@ void app_init(const char *argv[]);
 void app_start(void);
 void app_quit(void);
 
+
 int main(int argc, const char *argv[])
 {
 	(void) argc;

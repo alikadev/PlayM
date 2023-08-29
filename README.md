@@ -45,6 +45,7 @@ You will need `make`, `gcc`, `SDL2` and `SDL_Mixer`.
 - `renm id name`
 - `renp playlist`
 - `save filename`
+- `loadp filename`
 
 ## File format
 
@@ -106,6 +107,7 @@ Everything is there, it works and is easy to use
 
 - Change the default music name (remove extension)
 - Create command `save` (to save to m3u)
+- Create command `loadp` (to load a m3u playlist)
 - Rename command `ldir` to `loadd`
 - Rename command `list` to `showp`
 - Rename command `music` to `showm`

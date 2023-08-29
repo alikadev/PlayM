@@ -16,6 +16,7 @@ void       playlist_insert_music(Playlist *playlist, Music *music);
 void       playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics);
 size_t     playlist_size(Playlist *playlist);
 Music *    playlist_get_by_order(Playlist *playlist, size_t number);
-int        playlist_save_to_m3u(Playlist *playlist, char *filename);
+int        playlist_save_m3u(Playlist *playlist, char *filename);
+Playlist * playlist_load_m3u(char *filename);
 
 #endif
