@@ -2,3 +2,4 @@
 *.m3u
 *.o
 playm
+*.DS_Store
