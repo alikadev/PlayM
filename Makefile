@@ -1,45 +1,20 @@
-D_BUILD		?=	build
-D_SRC		:=	src
-D_INCLUDE 	:=	include
-OUT			?=	playm
+RM_F := rm -f
+CC   := cc
 
-CC 			:=	gcc
-LD 			:=	gcc
+SRC_DIR     := src
+INCLUDE_DIR := include
+PLAYM       := playm
+SRC         := $(shell find $(SRC_DIR) -name '*.c')
+MIXERFLAGS  := $(shell pkg-config --cflags --libs SDL2_mixer)
+CFLAGS      := -Werror -Wextra -Wall -std=c99 -I$(INCLUDE_DIR) $(MIXERFLAGS)
 
-SRC_C		:=	$(shell find $(D_SRC) -name '*.c')
-OBJ_C		:=	$(subst $(D_SRC), $(D_BUILD), $(SRC_C:%.c=%.c.o))
+.PHONY: $(PLAYM) clean
 
-CFLAGS	 	:=	-Werror -Wall -Wextra -c -std=c11 -I$(D_INCLUDE) $(shell pkg-config --cflags sdl2 SDL2_mixer)
-LDFLAGS		:=	$(shell pkg-config --libs sdl2 SDL2_mixer) -lpthread
+default: clean $(PLAYM)
 
-.PHONY: all clean debug
-
-default: always $(OUT)
-
-all: always clean $(OUT)
-
-debug: CFLAGS += -DDEBUG -g
-debug: debug_before all
-debug_before:
-	@printf "\e[1;32mBuilding\e[0m with \e[1;31mdebug\e[0m flags\n"
-
-trace: CFLAGS += -DDEBUG -DDEBUG_TRACE -g
-trace: trace_before all
-trace_before:
-	@printf "\e[1;32mBuilding\e[0m with \e[1;31mdebug\e[0m and \e[1;31mtrace\e[0m flags\n"
-
-$(OUT) : $(OBJ_C)
-	@printf "\e[1;32m  Building\e[0m $(notdir $@)\n"
-	@$(LD) $(OBJ_C) -o $@ $(LDFLAGS)
-
-$(D_BUILD)/%.c.o: $(D_SRC)/%.c
-	@mkdir -p $(dir $@)
-	@printf "\e[1;32m  Compiling\e[0m $(notdir $<)\n"
-	@$(CC) -o $@ $(CFLAGS) $<
+$(PLAYM) : $(SRC)
+	$(CC) $(CFLAGS) -o $(PLAYM) $(SRC) 
 
 clean:
-	@printf "\e[1;32m  Cleaning\e[0m\n"
-	@rm -rf $(D_BUILD)/*
+	$(RM_F) $(PLAYM)
 
-always:
-	@mkdir -p $(D_BUILD)
