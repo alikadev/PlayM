@@ -1,16 +1,10 @@
+#include <pm/ui/cli.h>
 #include <pm/audio.h>
 #include <pm/sys.h>
 
-#include <stdbool.h>
+#define INPUT_SIZE 512
 
-size_t INPUT_SIZE = 512;
-bool running = true;
-bool playing = false;
-int volume = MIX_MAX_VOLUME;
-
-Playlist *playlist = NULL;
-
-FunctionProcessor func_processor[] = 
+static FunctionProcessor func_processor[] = 
 {
 	[FN_NONE]            = process_none,
 	[FN_UNKNOWN]         = process_unknown,
@@ -76,3 +70,47 @@ char *func_desc[] = {
 	[FN_RENAME_PLAYLIST] = "Rename the current playlist",
 	[FN_SAVE_PLAYLIST]   = "Save the current playlist"
 };
+
+void cli_start(AppState *state)
+{
+	/* Initialzation */
+	signal(SIGINT, SIG_IGN);
+	srand(time(NULL));
+	audio_player_initialize();
+	state->playlist = playlist_create("DEFAULT");
+	audio_player_attach_playlist(state->playlist);
+}
+
+void cli_run(AppState *state)
+{
+    char input[INPUT_SIZE] = {0};
+    
+    while (state->running)
+    {
+        printf("> ");
+        scanf(" %[^\n]", input);
+
+        Command command;
+        command_create(&command, input);
+
+        func_processor[command.fn](state, command);
+        command_destroy(&command);
+    }
+}
+
+void cli_stop(AppState *state)
+{
+	audio_player_halt_music();
+	
+	OrderedLinkedList *node = state->playlist->list;
+	while(node)
+	{
+		music_unload((Music*)node->elem);
+		node = node->next;
+	}
+
+	audio_player_detach_playlist();
+	playlist_destroy(state->playlist);
+
+	audio_player_terminate();
+}

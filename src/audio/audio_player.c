@@ -142,10 +142,10 @@ void  audio_player_seek(double seconds)
 	Mix_SetMusicPosition(seconds);
 }
 
-void  audio_player_set_volume(float volume)
+void  audio_player_set_volume(int volume)
 {
 	debugfn();
-	Mix_VolumeMusic(volume * MIX_MAX_VOLUME);
+	Mix_VolumeMusic(volume);
 }
 
 bool audio_player_is_ready(void)

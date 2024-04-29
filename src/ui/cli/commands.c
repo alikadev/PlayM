@@ -1,48 +1,45 @@
-#include <pm/sys.h>
+#include <pm/ui/cli/commands.h>
 #include <pm/audio.h>
 #include <pm/debug.h>
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
-
+#include <string.h>
 
 #define ARGOF(input,fn) (input + strlen(func_name[fn]) + 1)
 
-#define CHECK_PLAYLIST();                           \
+#define CHECK_PLAYLIST(playlist);                           \
 if (playlist_size(playlist) == 0){                              \
 	printf("There's no music in the playlist\n");   \
 	return;                                       \
 }
 
-extern bool running;
-extern bool playing;
 extern char *func_name[];
 extern char *func_desc[];
-extern Playlist *playlist;
 
-extern FunctionProcessor func_processor[];
-
-void process_none(Command command)
+void process_none(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;	
+    (void) state;
 }
 
-void process_unknown(Command command)
+void process_unknown(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
+    (void) state;
 	printf("Unknown function: %s\n", (char *)command.tokens->elem);
 }
 
-void process_quit(Command command)
+void process_quit(AppState *state, Command command)
 {
 	(void) command;
-	running = false;
+    state->running = false;
 }
 
-void process_help(Command command)
+void process_help(AppState *state, Command command)
 {
 // Print function
 #define printfunc(fn, a1, a2) \
@@ -64,6 +61,7 @@ printf("  %-8s"               \
 
 	debugfn();
 	(void) command;
+    (void) state;
 	printf("Command list:\n");
 	printfunc(FN_QUIT,            "",   "");
 	printfunc(FN_HELP,            "",   "");
@@ -94,23 +92,23 @@ printf("  %-8s"               \
 	printfarg("pa",               "is the file path (with extension)");
 }
 
-void process_play(Command command)
+void process_play(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
-	CHECK_PLAYLIST();
+	CHECK_PLAYLIST(state->playlist);
 	audio_player_play();
 }
 
-void process_pause(Command command)
+void process_pause(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
-	CHECK_PLAYLIST();
+	CHECK_PLAYLIST(state->playlist);
 	audio_player_pause();
 }
 
-void process_volume(Command command)
+void process_volume(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 2)
@@ -123,16 +121,17 @@ void process_volume(Command command)
 	int volPercent = atoi(sVol);
 	if      (volPercent < 0)   volPercent = 0;
 	else if (volPercent > 100) volPercent = 100;
+	
+    state->volume = (float)volPercent / 100.f * MIX_MAX_VOLUME;
 			
-	float volume = (float)volPercent / 100.f;
-			
-	printf("Volume level is %.2f\n", volume);
-	audio_player_set_volume(volume);
+	printf("Volume level is %.2f\n", state->volume / 100.f);
+	audio_player_set_volume(state->volume);
 }
 
-void process_set_time(Command command)
+void process_set_time(AppState *state, Command command)
 {
 	debugfn();
+    (void) state;
 	if(linked_list_size(command.tokens) != 2)
 	{
 		fprintf(stderr, "Usage: %s <time>\n", func_name[command.fn]);
@@ -144,29 +143,31 @@ void process_set_time(Command command)
 	audio_player_seek(pos);
 }
 
-void process_next_music(Command command)
+void process_next_music(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
+    (void) state;
 	audio_player_play_next();
 }
 
-void process_previous_music(Command command)
+void process_previous_music(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
+    (void) state;
 	audio_player_play_prev();
 }
 
-void process_start(Command command)
+void process_start(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
-	CHECK_PLAYLIST();
+	CHECK_PLAYLIST(state->playlist);
 	audio_player_play_first();
 }
 
-void process_load_music(Command command)
+void process_load_music(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 2)
@@ -178,10 +179,10 @@ void process_load_music(Command command)
 	Music *music = music_load_from_file(filename);
 	if(!music)
 		return;
-	playlist_insert_music(playlist, music);
+	playlist_insert_music(state->playlist, music);
 }
 
-void process_load_music_directory(Command command)
+void process_load_music_directory(AppState *state, Command command)
 {
 	debugfn();
 	size_t tokc = linked_list_size(command.tokens);
@@ -201,12 +202,12 @@ void process_load_music_directory(Command command)
 	OrderedLinkedList *musics = music_load_directory(dirname, ext);
 	if(!musics)
 		return;
-	playlist_insert_music_list(playlist, musics);
+	playlist_insert_music_list(state->playlist, musics);
 	// Only destroy the list because the musics are now in the playlist
 	ordered_linked_list_destroy(musics);
 }
 
-void process_unload_music(Command command)
+void process_unload_music(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 2)
@@ -221,39 +222,41 @@ void process_unload_music(Command command)
 	if (id == audio_player_current_music_id())
 		audio_player_play_next();
 
-	Music *music = ordered_linked_list_remove(&playlist->list, id);
+	Music *music = ordered_linked_list_remove(&state->playlist->list, id);
 	debug("Unloading %s\n", music->filename);
 	music_unload(music);
 }
 
-void process_playlist(Command command)
+void process_playlist(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
 
-	printf("Playlist %s\n", playlist->name);
+	printf("Playlist %s\n", state->playlist->name);
 	
-	for (size_t i = 0; i < playlist_size(playlist); ++i)
+	for (size_t i = 0; i < playlist_size(state->playlist); ++i)
 	{
 		printf("%3lu%c  %s\n", 
 			i + 1, 
 		    (audio_player_current_music_id() == i) ? '*' : '.',
-			playlist_get_by_order(playlist, i)->name);
+			playlist_get_by_order(state->playlist, i)->name);
 	}
 }
 
-void process_music(Command command)
+void process_music(AppState *state, Command command)
 {
 	debugfn();
 	(void) command;
 
-	if (playlist_size(playlist) != 0)
+	if (playlist_size(state->playlist) != 0)
 	{
-		printf("%s\n", playlist_get_by_order(playlist, audio_player_current_music_id())->filename);
+		printf("%s\n", playlist_get_by_order(
+                    state->playlist, 
+                    audio_player_current_music_id())->filename);
 	}
 }
 
-void process_rename_music(Command command)
+void process_rename_music(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 3)
@@ -268,7 +271,8 @@ void process_rename_music(Command command)
 	debug("RenameMusic(id=%d, name=%s)\n", id, name);
 
 	// Get music
-	Music *music = (Music*)ordered_linked_list_get(playlist->list, id);
+	Music *music = (Music*)ordered_linked_list_get(
+            state->playlist->list, id);
 	assert(music && "Internal error: Music is NULL");
 
 	// Rename music
@@ -279,7 +283,7 @@ void process_rename_music(Command command)
 	strcpy(music->name, name);
 }
 
-void process_rename_playlist(Command command)
+void process_rename_playlist(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 2)
@@ -293,14 +297,14 @@ void process_rename_playlist(Command command)
 	debug("RenamePlaylist(name=%s)\n", name);
 
 	// Rename playlist
-	free(playlist->name);
-	playlist->name = malloc(strlen(name) + 1);
-	assert(playlist->name && "Internal error: malloc returned NULL");
-	strcpy(playlist->name, name);
+	free(state->playlist->name);
+	state->playlist->name = malloc(strlen(name) + 1);
+	assert(state->playlist->name && "Internal error: malloc returned NULL");
+	strcpy(state->playlist->name, name);
 }
 
 
-void process_save_playlist(Command command)
+void process_save_playlist(AppState *state, Command command)
 {
 	debugfn();
 	if(linked_list_size(command.tokens) != 2)
@@ -312,5 +316,96 @@ void process_save_playlist(Command command)
 	char *path = linked_list_get(command.tokens, 1);
 	debug("SavePlaylist(path=%s)\n", path);
 
-	playlist_save_to_m3u(playlist, path);
+	playlist_save_to_m3u(state->playlist, path);
+}
+
+
+void command_create(Command *command, char *request)
+{
+    printf("DEBUG: CREATE START\n");
+	debugfn();
+	if(!command)
+		assert(0 && "Bad arg: command_create 'command' argument is NULL!");
+	if(!request)
+		assert(0 && "Bad arg: command_create 'request' argument is NULL!");
+
+	command->fn = FN_NONE;
+	command->tokens = NULL;
+
+	char *buffer = malloc(strlen(request) + 1);
+	size_t i = 0;
+	bool backslash = false;
+	bool quote = false;
+
+	// Find all the tokens
+    printf("DEBUG: CREATE TOKENIZE\n");
+	while(*request)
+	{
+		if ((quote && *request == '"')
+		 || (!quote && !backslash && isspace(*request) && strlen(buffer) > 0))
+		{
+			// Terminal str
+			buffer[i] = 0;
+			// Copy str to dest
+			char *tok = malloc(strlen(buffer) + 1);
+			strcpy(tok, buffer);
+			// Put it in token list
+			if (!command->tokens)
+				command->tokens = linked_list_create(tok);
+			else
+				linked_list_insert(command->tokens, tok);
+			// Restart counter
+			i = 0;
+			backslash = false;
+		}
+		else if(*request == '"')
+			quote = true;
+		else if(*request == '\\' && !backslash)
+			backslash = true;
+		else {
+			buffer[i++] = *request; // Add char
+			backslash = false;
+		}
+
+		request++;
+	}
+    printf("DEBUG: CREATE TERMINATE\n");
+	if(i > 0)
+	{
+		// Terminate string
+		buffer[i] = 0;
+		// Copy str to dest
+		char *tok = malloc(strlen(buffer) + 1);
+		strcpy(tok, buffer);
+		// Put it in token list
+		if (!command->tokens)
+			command->tokens = linked_list_create(tok);
+		else
+			linked_list_insert(command->tokens, tok);
+	}
+
+    printf("DEBUG: CREATE APPEND\n");
+	// Parse the first token
+	if (linked_list_size(command->tokens) >= 1)
+		command->fn = str_to_function(command->tokens->elem);
+
+    printf("DEBUG: CREATE FREE\n");
+	free(buffer);
+}
+
+void command_destroy(Command *command)
+{
+	debugfn();
+	if(!command)
+		assert(0 && "Bad arg: command_destroy 'command' argument is NULL!");
+
+	// Free tokens
+	size_t i;
+	size_t size = linked_list_size(command->tokens);
+	for(i = 0; i < size; i++)
+	{
+		free(linked_list_get(command->tokens, i));
+	}
+
+	linked_list_destroy(command->tokens);
 }

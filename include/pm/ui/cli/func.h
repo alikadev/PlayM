@@ -1,7 +1,5 @@
-#ifndef PM_SYS_COMMAND_H
-#define PM_SYS_COMMAND_H
-
-#include <pm/sys/list.h>
+#ifndef PM_UI_CLI_FUNC_H
+#define PM_UI_CLI_FUNC_H
 
 typedef enum {
     FN_NONE = 0,         // No function, ignore
@@ -25,39 +23,6 @@ typedef enum {
     FN_SAVE_PLAYLIST,  // Rename the current playlist
 } Function;
 
-
-typedef struct {
-    Function fn;
-    LinkedList *tokens;
-} Command;
-
-void  command_create(Command *command, char *request);
-void  command_destroy(Command *command);
-
 Function str_to_function(char *functionName);
 
-
-
-typedef void (*FunctionProcessor)(Command command);
-
-void process_none(Command command);
-void process_unknown(Command command);
-void process_quit(Command command);
-void process_help(Command command);
-void process_play(Command command);
-void process_pause(Command command);
-void process_volume(Command command);
-void process_set_time(Command command);
-void process_next_music(Command command);
-void process_previous_music(Command command);
-void process_start(Command command);
-void process_load_music(Command command);
-void process_load_music_directory(Command command);
-void process_unload_music(Command command);
-void process_playlist(Command command);
-void process_music(Command command);
-void process_rename_music(Command command);
-void process_rename_playlist(Command command);
-void process_save_playlist(Command command);
-
-#endif
+#endif // PM_UI_CLI_FUNC_H

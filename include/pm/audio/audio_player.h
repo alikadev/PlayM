@@ -17,7 +17,7 @@ void   audio_player_play_prev(void);
 void   audio_player_halt_music(void);
 void   audio_player_pause(void);
 void   audio_player_seek(double seconds);
-void   audio_player_set_volume(float volume);
+void   audio_player_set_volume(int volume);
 bool   audio_player_is_ready(void);
 bool   audio_player_is_playlist_attached(void);
 bool   audio_player_is_playing(void);
