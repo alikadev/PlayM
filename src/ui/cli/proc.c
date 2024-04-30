@@ -33,54 +33,34 @@ void process_quit(AppState *state, Command command)
 
 void process_help(AppState *state, Command command)
 {
-// Print function
-#define printfunc(fn, a1, a2) \
-printf("  %-8s"               \
-       " %2s  %2s  "          \
-       ": %s\n",              \
-       func_name[fn],         \
-       a1, a2,                \
-       func_desc[fn])
-
-// Print function argument
-#define printfarg(arg, desc)  \
-printf("  %-8s"               \
-       " %2s  %2s  "          \
-       "  `%s` %s\n",         \
-       "",                    \
-       "", "",                \
-       arg, desc)
-
     (void) command;
     (void) state;
     printf("Command list:\n");
-    printfunc(FN_QUIT,            "",   "");
-    printfunc(FN_HELP,            "",   "");
-    printfunc(FN_START,           "",   "");
-    printfunc(FN_NEXT,            "",   "");
-    printfunc(FN_PREVIOUS,        "",   "");
-    printfunc(FN_PAUSE,           "",   "");
-    printfunc(FN_PLAY,            "",   "");
-    printfunc(FN_VOLUME,          "vo", "");
-    printfarg("vo",               "is a value between 0 and 100");
-    printfunc(FN_SET_TIME,        "ti", "");
-    printfarg("ti",               "is the time in seconds");
-    printfunc(FN_LOAD_MUSIC,      "pa", "");
-    printfarg("pa",               "is the path to the file or directory");
-    printfunc(FN_LOAD_MUSIC_DIR,  "pa", "ex");
-    printfarg("pa",               "is the path to the file or directory");
-    printfarg("ex",               "is the file extension (Optional, any = *)");
-    printfunc(FN_UNLOAD_MUSIC,    "id", "");
-    printfarg("id",               "is the music `id` from the `playlist` command");
-    printfunc(FN_PLAYLIST,        "",   "");
-    printfunc(FN_MUSIC,           "",   "");
-    printfunc(FN_RENAME_MUSIC,    "id", "na");
-    printfarg("id",               "is the ID of the music from the playlist command");
-    printfarg("na",               "is the new music name");
-    printfunc(FN_RENAME_PLAYLIST, "na", "");
-    printfarg("na",               "if the new playlist name");
-    printfunc(FN_SAVE_PLAYLIST,   "pa", "");
-    printfarg("pa",               "is the file path (with extension)");
+    printf("%s: %s\n", func_name[FN_QUIT], func_desc[FN_QUIT]);
+    printf("%s: %s\n", func_name[FN_HELP], func_desc[FN_HELP]);
+    printf("%s: %s\n", func_name[FN_START], func_desc[FN_START]);
+    printf("%s: %s\n", func_name[FN_NEXT], func_desc[FN_NEXT]);
+    printf("%s: %s\n", func_name[FN_PREVIOUS], func_desc[FN_PREVIOUS]);
+    printf("%s: %s\n", func_name[FN_PAUSE], func_desc[FN_PAUSE]);
+    printf("%s: %s\n", func_name[FN_PLAY], func_desc[FN_PLAY]);
+    printf("%s <0-100>: %s\n", 
+            func_name[FN_VOLUME], func_desc[FN_VOLUME]);
+    printf("%s <time>: %s\n", 
+            func_name[FN_SET_TIME], func_desc[FN_SET_TIME]);
+    printf("%s <path>: %s\n", 
+            func_name[FN_LOAD_MUSIC], func_desc[FN_LOAD_MUSIC]);
+    printf("%s <path> (<ext>): %s\n", 
+            func_name[FN_LOAD_MUSIC_DIR], func_desc[FN_LOAD_MUSIC_DIR]);
+    printf("%s <id>: %s\n", 
+            func_name[FN_UNLOAD_MUSIC], func_desc[FN_UNLOAD_MUSIC]);
+    printf("%s: %s\n", func_name[FN_PLAYLIST], func_desc[FN_PLAYLIST]);
+    printf("%s: %s\n", func_name[FN_MUSIC], func_desc[FN_MUSIC]);
+    printf("%s <id> <name>: %s\n", 
+            func_name[FN_RENAME_MUSIC], func_desc[FN_RENAME_MUSIC]);
+    printf("%s <id> <name>: %s\n", 
+            func_name[FN_RENAME_PLAYLIST], func_desc[FN_RENAME_PLAYLIST]);
+    printf("%s <name>: %s\n", 
+            func_name[FN_SAVE_PLAYLIST], func_desc[FN_SAVE_PLAYLIST]);
 }
 
 void process_play(AppState *state, Command command)
