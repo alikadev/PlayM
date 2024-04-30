@@ -9,4 +9,4 @@
  */
 int rand_between(int min, int max);
 
-#endif
+#endif // PM_SYS_MATH_H

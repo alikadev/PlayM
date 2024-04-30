@@ -1,5 +1,4 @@
 #include <pm/sys.h>
-#include <pm/debug.h>
 #include <stdlib.h>
 
 /**
@@ -10,6 +9,5 @@
  */
 int rand_between(int min, int max)
 {
-	debugfn();
-	return (rand() % (max - min + 1)) + min;
+    return (rand() % (max - min + 1)) + min;
 }

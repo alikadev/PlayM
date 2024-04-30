@@ -5,10 +5,10 @@
 #define AP_STATE_NONE      0
 
 typedef struct 
-{	
-	Playlist *playlist;
-	size_t currentMusic;
-	unsigned char state;
+{    
+    Playlist *playlist;
+    size_t currentMusic;
+    unsigned char state;
 } AudioPlayer;
 
 #endif
