@@ -4,6 +4,11 @@ Play Music versions and releases. Here are all the versions of PlayM that have b
 
 ## Version list
 
+### 0.1.6
+
+- Major codebase restructuration
+- Clean help message
+
 ### 0.1.5 (devel)
 
 - Change the default music name (remove extension)
