@@ -1,5 +1,4 @@
 #include <pm/sys.h>
-#include <pm/debug.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +6,6 @@
 
 LinkedList *linked_list_create(void *data)
 {
-    debugfn();
     LinkedList *list = malloc(sizeof *list);
     if(!list)
     {
@@ -21,7 +19,6 @@ LinkedList *linked_list_create(void *data)
 
 void linked_list_destroy(LinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: linked_list_destroy 'list' argument is NULL!");
 
@@ -32,7 +29,6 @@ void linked_list_destroy(LinkedList *list)
 
 void linked_list_destroy_purge(LinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: linked_list_destroy_purge 'list' argument is NULL!");
 
@@ -45,7 +41,6 @@ void linked_list_destroy_purge(LinkedList *list)
 
 void linked_list_insert(LinkedList *list, void *data)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: linked_list_insert 'list' argument is NULL!");
 
@@ -58,7 +53,6 @@ void linked_list_insert(LinkedList *list, void *data)
 
 void *linked_list_remove(LinkedList **pList, size_t item)
 {
-    debugfn();
     if(!pList)
         assert(0 && "Bad arg: linked_list_remove 'pList' argument is NULL!");
 
@@ -92,7 +86,6 @@ void *linked_list_remove(LinkedList **pList, size_t item)
 
 size_t linked_list_size(LinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: linked_list_size 'list' argument is NULL!");
 
@@ -110,7 +103,6 @@ size_t linked_list_size(LinkedList *list)
 
 void *linked_list_get(LinkedList *list, size_t item)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: linked_list_get 'list' argument is NULL!");
 

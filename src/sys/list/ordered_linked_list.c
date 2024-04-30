@@ -1,5 +1,4 @@
 #include <pm/sys.h>
-#include <pm/debug.h>
 
 #include <string.h>
 #include <errno.h>
@@ -10,7 +9,6 @@ extern int errno;
 
 OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *, void *))
 {
-    debugfn();
     OrderedLinkedList *list = malloc(sizeof *list);
     if(!list)
         assert(0 && strerror(errno));
@@ -23,7 +21,6 @@ OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *,
 
 void ordered_linked_list_destroy(OrderedLinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: ordered_linked_list_destroy 'list' argument is NULL!");
         
@@ -34,7 +31,6 @@ void ordered_linked_list_destroy(OrderedLinkedList *list)
 
 void ordered_linked_list_destroy_purge(OrderedLinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: ordered_linked_list_destroy_purge 'list' argument is NULL!");
 
@@ -47,7 +43,6 @@ void ordered_linked_list_destroy_purge(OrderedLinkedList *list)
 
 void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 {
-    debugfn();
     if(!pList)
         assert(0 && "Bad arg: ordered_linked_list_insert 'pList' argument is NULL!");
     
@@ -81,7 +76,6 @@ void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 
 void *ordered_linked_list_remove(OrderedLinkedList **pList, size_t item)
 {
-    debugfn();
     if(!pList)
         assert(0 && "Bad arg: ordered_linked_list_remove 'pList' argument is NULL!");
 
@@ -115,7 +109,6 @@ void *ordered_linked_list_remove(OrderedLinkedList **pList, size_t item)
 
 size_t ordered_linked_list_size(OrderedLinkedList *list)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
 
@@ -131,7 +124,6 @@ size_t ordered_linked_list_size(OrderedLinkedList *list)
 
 void *ordered_linked_list_get(OrderedLinkedList *list, size_t item)
 {
-    debugfn();
     if(!list)
         assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
 

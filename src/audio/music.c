@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 
 #include <pm/audio/music.h>
-#include <pm/debug.h>
 
 #include <errno.h>
 #include <dirent.h> 
@@ -20,7 +19,6 @@ extern int errno;
  */
 Music *music_load_from_file(char *filename)
 {
-    debugfn();
     Music *music = malloc(sizeof *music);
     if(!music)
         assert(0 && strerror(errno));
@@ -63,7 +61,6 @@ Music *music_load_from_file(char *filename)
 
 OrderedLinkedList *music_load_directory(char *dirname, char *ext)
 {
-    debugfn();
     OrderedLinkedList *musicList = NULL;
     DIR *d;
     struct dirent *dir;
@@ -100,7 +97,6 @@ OrderedLinkedList *music_load_directory(char *dirname, char *ext)
 
 void music_unload(Music *music)
 {
-    debugfn();
     Mix_FreeMusic(music->sample);
     free(music->filename);
     free(music);
@@ -108,7 +104,6 @@ void music_unload(Music *music)
 
 void music_unload_directory(OrderedLinkedList *musicList)
 {
-    debugfn();
     OrderedLinkedList *node = musicList;
     while(node)
     {
@@ -121,6 +116,5 @@ void music_unload_directory(OrderedLinkedList *musicList)
 
 int music_compare(Music *m1, Music *m2)
 {
-    debugfn();
     return strcmp(m1->filename, m2->filename);
 }

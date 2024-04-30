@@ -1,6 +1,5 @@
 #include <pm/ui/cli/proc.h>
 #include <pm/audio.h>
-#include <pm/debug.h>
 #include <assert.h>
 #include <assert.h>
 
@@ -15,14 +14,12 @@ if (playlist_size(playlist) == 0){                  \
 
 void process_none(AppState *state, Command command)
 {
-    debugfn();
     (void) command;    
     (void) state;
 }
 
 void process_unknown(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     (void) state;
     printf("Unknown function: %s\n", (char *)command.tokens->elem);
@@ -54,7 +51,6 @@ printf("  %-8s"               \
        "", "",                \
        arg, desc)
 
-    debugfn();
     (void) command;
     (void) state;
     printf("Command list:\n");
@@ -89,7 +85,6 @@ printf("  %-8s"               \
 
 void process_play(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     CHECK_PLAYLIST(state->playlist);
     audio_player_play();
@@ -97,7 +92,6 @@ void process_play(AppState *state, Command command)
 
 void process_pause(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     CHECK_PLAYLIST(state->playlist);
     audio_player_pause();
@@ -105,7 +99,6 @@ void process_pause(AppState *state, Command command)
 
 void process_volume(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Usage: %s <vol>\n", func_name[command.fn]);
@@ -125,7 +118,6 @@ void process_volume(AppState *state, Command command)
 
 void process_set_time(AppState *state, Command command)
 {
-    debugfn();
     (void) state;
     if(linked_list_size(command.tokens) != 2)
     {
@@ -140,7 +132,6 @@ void process_set_time(AppState *state, Command command)
 
 void process_next_music(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     (void) state;
     audio_player_play_next();
@@ -148,7 +139,6 @@ void process_next_music(AppState *state, Command command)
 
 void process_previous_music(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     (void) state;
     audio_player_play_prev();
@@ -156,7 +146,6 @@ void process_previous_music(AppState *state, Command command)
 
 void process_start(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
     CHECK_PLAYLIST(state->playlist);
     audio_player_play_first();
@@ -164,7 +153,6 @@ void process_start(AppState *state, Command command)
 
 void process_load_music(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Usage: %s <filename>\n", func_name[command.fn]);
@@ -179,7 +167,6 @@ void process_load_music(AppState *state, Command command)
 
 void process_load_music_directory(AppState *state, Command command)
 {
-    debugfn();
     size_t tokc = linked_list_size(command.tokens);
     if(tokc != 2 && tokc != 3)
     {
@@ -204,7 +191,6 @@ void process_load_music_directory(AppState *state, Command command)
 
 void process_unload_music(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Usage: %s <id>\n", func_name[command.fn]);
@@ -212,19 +198,16 @@ void process_unload_music(AppState *state, Command command)
     }
 
     size_t id = atoi(linked_list_get(command.tokens, 1)) - 1;
-    debug("UnloadMusic(id=%lu)\n", id);
     
     if (id == audio_player_current_music_id())
         audio_player_play_next();
 
     Music *music = ordered_linked_list_remove(&state->playlist->list, id);
-    debug("Unloading %s\n", music->filename);
     music_unload(music);
 }
 
 void process_playlist(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
 
     printf("Playlist %s\n", state->playlist->name);
@@ -240,7 +223,6 @@ void process_playlist(AppState *state, Command command)
 
 void process_music(AppState *state, Command command)
 {
-    debugfn();
     (void) command;
 
     if (playlist_size(state->playlist) != 0)
@@ -253,7 +235,6 @@ void process_music(AppState *state, Command command)
 
 void process_rename_music(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 3)
     {
         fprintf(stderr, "Usage: %s <id> <name>\n", func_name[command.fn]);
@@ -263,7 +244,6 @@ void process_rename_music(AppState *state, Command command)
     // Get args
     int id = atoi(linked_list_get(command.tokens, 1)) - 1;
     char *name = linked_list_get(command.tokens, 2);
-    debug("RenameMusic(id=%d, name=%s)\n", id, name);
 
     // Get music
     Music *music = (Music*)ordered_linked_list_get(
@@ -280,7 +260,6 @@ void process_rename_music(AppState *state, Command command)
 
 void process_rename_playlist(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
@@ -289,7 +268,6 @@ void process_rename_playlist(AppState *state, Command command)
 
     // Get args
     char *name = linked_list_get(command.tokens, 1);
-    debug("RenamePlaylist(name=%s)\n", name);
 
     // Rename playlist
     free(state->playlist->name);
@@ -301,7 +279,6 @@ void process_rename_playlist(AppState *state, Command command)
 
 void process_save_playlist(AppState *state, Command command)
 {
-    debugfn();
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Usage: %s <path>\n", func_name[command.fn]);
@@ -309,7 +286,6 @@ void process_save_playlist(AppState *state, Command command)
     }
 
     char *path = linked_list_get(command.tokens, 1);
-    debug("SavePlaylist(path=%s)\n", path);
 
     playlist_save_to_m3u(state->playlist, path);
 }

@@ -3,15 +3,11 @@
 #include <stdbool.h>
 #include <time.h>
 #include <signal.h>
+#include <assert.h>
 
 #include <pm/ui/cli.h>
 #include <pm/sys.h>
 #include <pm/audio.h>
-#include <pm/debug.h>
-
-void app_init(const char *argv[]);
-void app_start(void);
-void app_quit(void);
 
 int main(int argc, const char *argv[])
 {

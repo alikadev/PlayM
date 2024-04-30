@@ -1,6 +1,5 @@
 #include <pm/ui/cli/command.h>
 #include <pm/audio.h>
-#include <pm/debug.h>
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -14,7 +13,6 @@ extern char *func_desc[];
 
 void command_create(Command *command, char *request)
 {
-    debugfn();
     if(!command)
         assert(0 && "Bad arg: command_create 'command' argument is NULL!");
     if(!request)
@@ -82,7 +80,6 @@ void command_create(Command *command, char *request)
 
 void command_destroy(Command *command)
 {
-    debugfn();
     if(!command)
         assert(0 && "Bad arg: command_destroy 'command' argument is NULL!");
 

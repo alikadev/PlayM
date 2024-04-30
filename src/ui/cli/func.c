@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-#include <pm/debug.h>
 #include <pm/ui/cli/func.h>
 
 extern char *func_name[];
 
 Function str_to_function(char *functionName)
 {
-    debugfn();
     if (strlen(functionName) == 0)
         return FN_NONE;
     if (0 == strcmp(functionName, func_name[FN_QUIT]))
