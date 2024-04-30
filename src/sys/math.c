@@ -10,6 +10,6 @@
  */
 int rand_between(int min, int max)
 {
-	debugfn();
-	return (rand() % (max - min + 1)) + min;
+    debugfn();
+    return (rand() % (max - min + 1)) + min;
 }

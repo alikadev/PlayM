@@ -6,10 +6,10 @@
 
 char *ignore_spaces(char *str)
 {
-	debugfn();
-	while (isspace(*str))
-		str++;
-	return str;
+    debugfn();
+    while (isspace(*str))
+        str++;
+    return str;
 }
 
 /**
@@ -19,16 +19,16 @@ char *ignore_spaces(char *str)
  */
 char *next_token(char *str)
 {
-	debugfn();
-	while (*str)
-	{
-		if (!isspace(*str))
-		{
-			str++;
-			continue;
-		}
-		str = ignore_spaces(str);
-		return str;
-	}
-	return NULL;
+    debugfn();
+    while (*str)
+    {
+        if (!isspace(*str))
+        {
+            str++;
+            continue;
+        }
+        str = ignore_spaces(str);
+        return str;
+    }
+    return NULL;
 }

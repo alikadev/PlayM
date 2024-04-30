@@ -6,8 +6,8 @@
 typedef struct LinkedList LinkedList;
 struct LinkedList
 {
-	LinkedList *next;
-	void *elem;
+    LinkedList *next;
+    void *elem;
 };
 
 LinkedList *linked_list_create(void *data);
@@ -21,9 +21,9 @@ void *      linked_list_get(LinkedList *list, size_t item);
 typedef struct OrderedLinkedList OrderedLinkedList;
 struct OrderedLinkedList
 {
-	OrderedLinkedList *next;
-	void *elem;
-	int (*compare)(void *, void *);
+    OrderedLinkedList *next;
+    void *elem;
+    int (*compare)(void *, void *);
 };
 
 OrderedLinkedList * ordered_linked_list_create(void *data, int (*compare)(void *, void *));

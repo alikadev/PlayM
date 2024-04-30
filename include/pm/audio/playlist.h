@@ -6,8 +6,8 @@
 #include <pm/audio/music.h>
 
 typedef struct {
-	OrderedLinkedList *list;
-	char *name;
+    OrderedLinkedList *list;
+    char *name;
 } Playlist;
 
 Playlist * playlist_create(const char *name);

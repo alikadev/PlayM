@@ -15,8 +15,8 @@ void app_quit(void);
 
 int main(int argc, const char *argv[])
 {
-	(void) argc;
-	(void) argv;
+    (void) argc;
+    (void) argv;
 
     AppState state = {
         .running = true,
@@ -28,5 +28,5 @@ int main(int argc, const char *argv[])
     cli_start(&state);
     cli_run(&state);
     cli_stop(&state);
-	return 0;
+    return 0;
 }
