@@ -65,15 +65,20 @@ void process_help(AppState *state, Command command)
 
 void process_play(AppState *state, Command command)
 {
+    (void) state;
     (void) command;
-    CHECK_PLAYLIST(state->playlist);
+    if (!audio_player_is_playlist_attached())
+    {
+        printf("No playlist is currently attached\n");
+        return;
+    }
     audio_player_play();
 }
 
 void process_pause(AppState *state, Command command)
 {
+    (void) state;
     (void) command;
-    CHECK_PLAYLIST(state->playlist);
     audio_player_pause();
 }
 
@@ -92,7 +97,7 @@ void process_volume(AppState *state, Command command)
     
     state->volume = (float)volPercent / 100.f * MIX_MAX_VOLUME;
             
-    printf("Volume level is %.2f\n", state->volume / 100.f);
+    printf("Volume level is %d\n", volPercent);
     audio_player_set_volume(state->volume);
 }
 
@@ -114,6 +119,11 @@ void process_next_music(AppState *state, Command command)
 {
     (void) command;
     (void) state;
+    if (!audio_player_is_playlist_attached())
+    {
+        printf("No playlist is currently attached\n");
+        return;
+    }
     audio_player_play_next();
 }
 
@@ -121,13 +131,23 @@ void process_previous_music(AppState *state, Command command)
 {
     (void) command;
     (void) state;
+    if (!audio_player_is_playlist_attached())
+    {
+        printf("No playlist is currently attached\n");
+        return;
+    }
     audio_player_play_prev();
 }
 
 void process_start(AppState *state, Command command)
 {
+    (void) state;
     (void) command;
-    CHECK_PLAYLIST(state->playlist);
+    if (!audio_player_is_playlist_attached())
+    {
+        printf("No playlist is currently attached\n");
+        return;
+    }
     audio_player_play_first();
 }
 
@@ -142,7 +162,7 @@ void process_load_music(AppState *state, Command command)
     Music *music = music_load_from_file(filename);
     if(!music)
         return;
-    playlist_insert_music(state->playlist, music);
+    playlist_insert_music(state->working_playlist, music);
 }
 
 void process_load_music_directory(AppState *state, Command command)
@@ -164,7 +184,7 @@ void process_load_music_directory(AppState *state, Command command)
     OrderedLinkedList *musics = music_load_directory(dirname, ext);
     if(!musics)
         return;
-    playlist_insert_music_list(state->playlist, musics);
+    playlist_insert_music_list(state->working_playlist, musics);
     // Only destroy the list because the musics are now in the playlist
     ordered_linked_list_destroy(musics);
 }
@@ -182,7 +202,7 @@ void process_unload_music(AppState *state, Command command)
     if (id == audio_player_current_music_id())
         audio_player_play_next();
 
-    Music *music = ordered_linked_list_remove(&state->playlist->list, id);
+    Music *music = ordered_linked_list_remove(&state->working_playlist->list, id);
     music_unload(music);
 }
 
@@ -190,27 +210,38 @@ void process_playlist(AppState *state, Command command)
 {
     (void) command;
 
-    printf("Playlist %s\n", state->playlist->name);
+    printf("Playlist %s\n", state->working_playlist->name);
     
-    for (size_t i = 0; i < playlist_size(state->playlist); ++i)
+    for (size_t i = 0; i < playlist_size(state->working_playlist); ++i)
     {
         printf("%3lu%c  %s\n", 
             i + 1, 
             (audio_player_current_music_id() == i) ? '*' : '.',
-            playlist_get_by_order(state->playlist, i)->name);
+            playlist_get_by_order(state->working_playlist, i)->name);
     }
 }
 
 void process_music(AppState *state, Command command)
 {
+    (void) state;
     (void) command;
 
-    if (playlist_size(state->playlist) != 0)
+    Playlist *playlist = audio_player_get_attached_playlist();
+    if (!playlist)
     {
-        printf("%s\n", playlist_get_by_order(
-                    state->playlist, 
-                    audio_player_current_music_id())->filename);
+        printf("No playlist is currently attached\n");
+        return;
     }
+
+    if (playlist_size(playlist) == 0)
+    {
+        printf("Current playlist is empty\n");
+        return;
+    }
+
+    size_t id = audio_player_current_music_id();
+
+    printf("%s\n", playlist_get_by_order(playlist, id)->filename);
 }
 
 void process_rename_music(AppState *state, Command command)
@@ -227,7 +258,7 @@ void process_rename_music(AppState *state, Command command)
 
     // Get music
     Music *music = (Music*)ordered_linked_list_get(
-            state->playlist->list, id);
+            state->working_playlist->list, id);
     assert(music && "Internal error: Music is NULL");
 
     // Rename music
@@ -250,10 +281,10 @@ void process_rename_playlist(AppState *state, Command command)
     char *name = linked_list_get(command.tokens, 1);
 
     // Rename playlist
-    free(state->playlist->name);
-    state->playlist->name = malloc(strlen(name) + 1);
-    assert(state->playlist->name && "Internal error: malloc returned NULL");
-    strcpy(state->playlist->name, name);
+    free(state->working_playlist->name);
+    state->working_playlist->name = malloc(strlen(name) + 1);
+    assert(state->working_playlist->name && "Internal error: malloc returned NULL");
+    strcpy(state->working_playlist->name, name);
 }
 
 
@@ -267,5 +298,5 @@ void process_save_playlist(AppState *state, Command command)
 
     char *path = linked_list_get(command.tokens, 1);
 
-    playlist_save_to_m3u(state->playlist, path);
+    playlist_save_to_m3u(state->working_playlist, path);
 }

@@ -51,7 +51,7 @@ int main(int argc, const char *argv[])
         .running = true,
         .playing = false,
         .volume = MIX_MAX_VOLUME,
-        .playlist = NULL,
+        .playlists = NULL,
     };
 
     cli_start(&state);

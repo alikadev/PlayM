@@ -10,6 +10,7 @@ void   audio_player_initialize(void);
 void   audio_player_terminate(void);
 void   audio_player_attach_playlist(Playlist *playlist);
 void   audio_player_detach_playlist(void);
+Playlist *audio_player_get_attached_playlist();
 void   audio_player_play_first(void);
 void   audio_player_play(void);
 void   audio_player_play_next(void);

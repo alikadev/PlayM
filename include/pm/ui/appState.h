@@ -4,12 +4,14 @@
 #include <stdbool.h>
 
 #include <pm/audio/playlist.h>
+#include <pm/sys/list.h>
 
 typedef struct {
     bool running;
     bool playing;
     int volume;
-    Playlist *playlist;
+    LinkedList *playlists;
+    Playlist *working_playlist;
 } AppState;
 
 #endif // PM_UI_CLI_APPSTATE_H

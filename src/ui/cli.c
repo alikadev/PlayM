@@ -78,8 +78,11 @@ void cli_start(AppState *state)
     signal(SIGINT, SIG_IGN);
     srand(time(NULL));
     audio_player_initialize();
-    state->playlist = playlist_create("DEFAULT");
-    audio_player_attach_playlist(state->playlist);
+    
+    Playlist *playlist = playlist_create("DEFAULT");
+    state->working_playlist = playlist;
+    state->playlists = linked_list_create(playlist);
+    audio_player_attach_playlist(playlist);
 }
 
 void cli_run(AppState *state)
@@ -101,17 +104,21 @@ void cli_run(AppState *state)
 
 void cli_stop(AppState *state)
 {
-    audio_player_halt_music();
-    
-    OrderedLinkedList *node = state->playlist->list;
-    while(node)
-    {
-        music_unload((Music*)node->elem);
-        node = node->next;
-    }
-
+    audio_player_halt_music(); 
     audio_player_detach_playlist();
-    playlist_destroy(state->playlist);
+
+    while (state->playlists)
+    {
+        Playlist *plist = (Playlist*)state->playlists->elem;
+        OrderedLinkedList *node = plist->list;
+        while(node)
+        {
+            music_unload((Music*)node->elem);
+            node = node->next;
+        }
+        playlist_destroy(plist);
+        linked_list_remove(&state->playlists, 0);
+    }
 
     audio_player_terminate();
 }

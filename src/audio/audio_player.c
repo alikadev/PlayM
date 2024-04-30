@@ -51,6 +51,11 @@ void audio_player_detach_playlist(void)
     audioPlayer.playlist = NULL;
 }
 
+Playlist *audio_player_get_attached_playlist()
+{
+    return audioPlayer.playlist;
+}
+
 void audio_player_play_music(void)
 {
     Music *music = playlist_get_by_order(audioPlayer.playlist, audioPlayer.currentMusic);
