@@ -24,4 +24,4 @@ bool   audio_player_is_playing(void);
 bool   audio_player_is_paused(void);
 size_t audio_player_current_music_id(void);
 
-#endif
+#endif // PM_AUDIO_DEVICE_H

@@ -16,4 +16,4 @@ void                music_unload_directory(OrderedLinkedList *musicList);
 void                music_unload(Music *music);
 int                 music_compare(Music *m1, Music *m2);
 
-#endif
+#endif // PM_AUDIO_MUSIC_H

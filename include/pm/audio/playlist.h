@@ -18,4 +18,4 @@ size_t     playlist_size(Playlist *playlist);
 Music *    playlist_get_by_order(Playlist *playlist, size_t number);
 int        playlist_save_to_m3u(Playlist *playlist, char *filename);
 
-#endif
+#endif // PM_AUDIO_PLAYLIST_H

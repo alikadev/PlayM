@@ -10,4 +10,4 @@ char *ignore_spaces(char *str);
  */
 char *next_token(char *str);
 
-#endif
+#endif // PM_SYS_STRING_H

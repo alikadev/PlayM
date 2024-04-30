@@ -1,5 +1,5 @@
-#ifndef PM_SYS_COMMAND_H
-#define PM_SYS_COMMAND_H
+#ifndef PM_UI_CLI_COMMAND_H
+#define PM_UI_CLI_COMMAND_H
 
 #include <pm/sys/list.h>
 #include <pm/ui/cli/func.h>
@@ -12,4 +12,4 @@ typedef struct {
 void  command_create(Command *command, char *request);
 void  command_destroy(Command *command);
 
-#endif
+#endif // PM_UI_CLI_COMMAND_H

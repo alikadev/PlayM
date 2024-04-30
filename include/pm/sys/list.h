@@ -34,4 +34,4 @@ void *              ordered_linked_list_remove(OrderedLinkedList **pList, size_t
 size_t              ordered_linked_list_size(OrderedLinkedList *list);
 void *              ordered_linked_list_get(OrderedLinkedList *list, size_t item);
 
-#endif
+#endif // PM_SYS_LIST_H

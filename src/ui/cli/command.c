@@ -1,4 +1,4 @@
-#include <pm/ui/cli/commands.h>
+#include <pm/ui/cli/command.h>
 #include <pm/audio.h>
 #include <pm/debug.h>
 
