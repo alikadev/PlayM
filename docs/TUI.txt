@@ -1,0 +1,105 @@
+*= PlayM Home==================================*
+| Museum of Concio... |  1. Botanical Dimen... |
+| >Nothings lasts...  |> 2. Outer Shpongolia   |
+| The God Particle    |  3* Levitation Nation  |
+|                     |  4. Periscopes of C... |
+|                     |  5. Schmaltz Herring   |
+|                     |  =V==================  |
+|                     |                        |
+| Create              | Load                   |
+|----------------------------------------------|
+| Nothings lasts but noth... - Levitatino N... |
+| [##############             ] 1:37 / 3:40    |
+| [H]elp                                       |
+*==============================================*
+
+*= PlayM Create ===============================*
+| Museum of Concio... |  1. Botanical Dimen... |
+| Nothings lasts b... |  2. Outer Shpongolia   |
+| The God Particle    |  3* Levitation Nation  |
+|                     |  4. Periscopes of C... |
+|                     |  5. Schmaltz Herring   |
+|                     |  =V==================  |
+|                     |                        |
+| Create              | Load                   |
+|----------------------------------------------|
+| Name of the new Album:                       |
+|  =Abcd                                       |
+| Confirm >Quit  Help                          |
+*==============================================*
+
+*= PlayM Load =================================*
+| Museum of Concio... |  1. Botanical Dimen... |
+| Nothings lasts b... |  2. Outer Shpongolia   |
+| The God Particle    |  3* Levitation Nation  |
+|                     |  4. Periscopes of C... |
+|                     |  5. Schmaltz Herring   |
+|                     |  =V==================  |
+|                     |                        |
+| Create              |>Load                   |
+|----------------------------------------------|
+| Path of the new Music:                       |
+|  =Abcd                                       |
+| Confirm >Quit  Help                          |
+*==============================================*
+
+*= PlayM Help =================================*
+| ...                                          |
+| ...                                          |
+*==============================================*
+
+`>` is your cursor
+
+On `PlayM Home`
+	Up/Down = Move between elements
+	Right = Move in a playlist
+	Left = Exit playlist
+	Enter/Right = Play
+	S = Swap elements
+	When Enter on `Create`
+		Goto `PlayM Create`
+	When Enter on `Load`
+		Goto `PlayM Load`
+	When Enter on `Element`,
+		Open Element sub-menu
+	When Enter on `Music`
+		Play music
+	When `H` is pressed
+		Goto `PlayM Help` for Home
+	When `P` is pressed
+		Play previous
+	When `N` is pressed
+		Play next
+	When `Space` is pressed
+		Toggle music state
+	When `l` is pressed
+		Toggle loop music
+	When `L` is pressed
+		Toggle loop album
+
+On `PlayM Create`
+	Left/Right = Move between Choices
+	When `Escape` is pressed
+		Go back to `PlayM Home` without saving
+	When `C` is pressed
+		Confirm name
+	When `H` is pressed
+		Goto `PlayM Help` for Create
+	When `Enter` is pressed
+		Apply Choice
+	When press any char:
+		Write in buffer
+
+On `PlayM Load`
+	Left/Right = Move between Choices
+	When `Escape` is pressed
+		Go back to `PlayM Home` without saving
+	When `C` is pressed
+		Confirm name
+	When `H` is pressed
+		Goto `PlayM Help` for Load
+	When `Enter` is pressed
+		Apply Choice
+	When press any char:
+		Write in buffer
+
