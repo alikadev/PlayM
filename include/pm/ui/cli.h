@@ -1,8 +1,7 @@
 #ifndef PM_UI_CLI_H
 #define PM_UI_CLI_H
 
-#include <pm/ui/cli/command.h>
-#include <pm/ui/cli/proc.h>
+#include <pm/ui/appState.h>
 
 void cli_start(AppState *state);
 void cli_run(AppState *state);

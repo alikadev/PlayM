@@ -1,4 +1,5 @@
 #include <pm/ui/cli.h>
+#include <pm/ui/cli/proc.h>
 #include <pm/audio.h>
 #include <pm/sys.h>
 

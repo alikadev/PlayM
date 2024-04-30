@@ -3,15 +3,7 @@
 
 #include <pm/ui/cli/command.h>
 #include <pm/audio/playlist.h>
-
-#include <stdbool.h>
-
-typedef struct {
-    bool running;
-    bool playing;
-    int volume;
-    Playlist *playlist;
-} AppState;
+#include <pm/ui/appState.h>
 
 typedef void (*FunctionProcessor)(AppState *state, Command command);
 
