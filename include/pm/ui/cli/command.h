@@ -2,10 +2,8 @@
 #define PM_UI_CLI_COMMAND_H
 
 #include <pm/sys/list.h>
-#include <pm/ui/cli/func.h>
 
 typedef struct {
-    Function fn;
     LinkedList *tokens;
 } Command;
 

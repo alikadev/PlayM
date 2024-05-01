@@ -1,6 +1,9 @@
 #ifndef PM_UI_CLI_FUNC_H
 #define PM_UI_CLI_FUNC_H
 
+#include <pm/ui/cli/command.h>
+#include <pm/ui/appState.h>
+
 typedef enum {
     FN_NONE = 0,         // No function, ignore
     FN_UNKNOWN,          // Unknown function, report error
@@ -26,8 +29,17 @@ typedef enum {
     FN_DESTROY_PLAYLIST, // Destroy a playlist
     FN_SWITCH_PLAYLIST,  // Switch the current playing playlist
     FN_USE_PLAYLIST,     // Switch the current working playlist
+} FunctionType;
+
+typedef struct
+{
+    FunctionType type;
+    char name[32];
+    char args[16];
+    char descr[128];
+    void (*processor)(AppState *state, Command cmd);
 } Function;
 
-Function str_to_function(char *functionName);
+Function *str_to_function(char *name, Function *fns, size_t size);
 
 #endif // PM_UI_CLI_FUNC_H

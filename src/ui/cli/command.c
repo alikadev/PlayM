@@ -18,7 +18,6 @@ void command_create(Command *command, char *request)
     if(!request)
         assert(0 && "Bad arg: command_create 'request' argument is NULL!");
 
-    command->fn = FN_NONE;
     command->tokens = NULL;
 
     char *buffer = malloc(strlen(request) + 1);
@@ -70,10 +69,6 @@ void command_create(Command *command, char *request)
         else
             linked_list_insert(command->tokens, tok);
     }
-
-    // Parse the first token
-    if (linked_list_size(command->tokens) >= 1)
-        command->fn = str_to_function(command->tokens->elem);
 
     free(buffer);
 }

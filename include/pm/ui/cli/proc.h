@@ -5,8 +5,6 @@
 #include <pm/audio/playlist.h>
 #include <pm/ui/appState.h>
 
-typedef void (*FunctionProcessor)(AppState *state, Command command);
-
 void process_none(AppState *state, Command command);
 void process_unknown(AppState *state, Command command);
 void process_quit(AppState *state, Command command);

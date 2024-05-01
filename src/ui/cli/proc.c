@@ -1,10 +1,11 @@
 #include <pm/ui/cli/proc.h>
+#include <pm/ui/cli/func.h>
 #include <pm/audio.h>
 #include <assert.h>
 #include <assert.h>
 
-extern char *func_name[];
-extern char *func_desc[];
+extern Function functions[];
+extern size_t function_cnt;
 
 #define CHECK_PLAYLIST(playlist);                   \
 if (playlist_size(playlist) == 0){                  \
@@ -35,42 +36,16 @@ void process_help(AppState *state, Command command)
 {
     (void) command;
     (void) state;
+    Function *fn;
     printf("Command list:\n");
-    printf("%s: %s\n", func_name[FN_QUIT], func_desc[FN_QUIT]);
-    printf("%s: %s\n", func_name[FN_HELP], func_desc[FN_HELP]);
-    printf("%s: %s\n", func_name[FN_START], func_desc[FN_START]);
-    printf("%s: %s\n", func_name[FN_NEXT], func_desc[FN_NEXT]);
-    printf("%s: %s\n", func_name[FN_PREVIOUS], func_desc[FN_PREVIOUS]);
-    printf("%s: %s\n", func_name[FN_PAUSE], func_desc[FN_PAUSE]);
-    printf("%s: %s\n", func_name[FN_PLAY], func_desc[FN_PLAY]);
-    printf("%s <0-100>: %s\n", 
-            func_name[FN_VOLUME], func_desc[FN_VOLUME]);
-    printf("%s <time>: %s\n", 
-            func_name[FN_SET_TIME], func_desc[FN_SET_TIME]);
-    printf("%s <path>: %s\n", 
-            func_name[FN_LOAD_MUSIC], func_desc[FN_LOAD_MUSIC]);
-    printf("%s <path> (<ext>): %s\n", 
-            func_name[FN_LOAD_MUSIC_DIR], func_desc[FN_LOAD_MUSIC_DIR]);
-    printf("%s <id>: %s\n", 
-            func_name[FN_UNLOAD_MUSIC], func_desc[FN_UNLOAD_MUSIC]);
-    printf("%s: %s\n", func_name[FN_PLAYLIST], func_desc[FN_PLAYLIST]);
-    printf("%s: %s\n", func_name[FN_MUSIC], func_desc[FN_MUSIC]);
-    printf("%s <id> <name>: %s\n", 
-            func_name[FN_RENAME_MUSIC], func_desc[FN_RENAME_MUSIC]);
-    printf("%s <id> <name>: %s\n", 
-            func_name[FN_RENAME_PLAYLIST], func_desc[FN_RENAME_PLAYLIST]);
-    printf("%s <name>: %s\n", 
-            func_name[FN_SAVE_PLAYLIST], func_desc[FN_SAVE_PLAYLIST]);
-    printf("%s: %s\n", 
-            func_name[FN_LIST_PLAYLISTS], func_desc[FN_LIST_PLAYLISTS]);
-    printf("%s <name>: %s\n", 
-            func_name[FN_CREATE_PLAYLIST], func_desc[FN_CREATE_PLAYLIST]);
-    printf("%s <name>: %s\n", 
-            func_name[FN_DESTROY_PLAYLIST], func_desc[FN_DESTROY_PLAYLIST]);
-    printf("%s: %s\n", 
-            func_name[FN_SWITCH_PLAYLIST], func_desc[FN_SWITCH_PLAYLIST]);
-    printf("%s <name>: %s\n", 
-            func_name[FN_USE_PLAYLIST], func_desc[FN_USE_PLAYLIST]);
+    for (size_t i = 2; i < function_cnt; ++i)
+    {
+        fn = &functions[i];
+        printf("%s", fn->name);
+        if (strlen(fn->args) != 0)
+            printf(" %s", fn->args);
+        printf(": %s\n", fn->descr);
+    }
 }
 
 void process_play(AppState *state, Command command)
@@ -96,7 +71,7 @@ void process_volume(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <vol>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
     char *sVol = linked_list_get(command.tokens, 1);
@@ -116,7 +91,7 @@ void process_set_time(AppState *state, Command command)
     (void) state;
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <time>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
     char *sPos = linked_list_get(command.tokens, 1);
@@ -165,7 +140,7 @@ void process_load_music(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <filename>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
     char *filename = linked_list_get(command.tokens, 1);
@@ -181,7 +156,7 @@ void process_load_music_directory(AppState *state, Command command)
     size_t tokc = linked_list_size(command.tokens);
     if(tokc != 2 && tokc != 3)
     {
-        fprintf(stderr, "Usage: %s <dirname> [<ext>]\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -205,7 +180,7 @@ void process_unload_music(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <id>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -262,7 +237,7 @@ void process_rename_music(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 3)
     {
-        fprintf(stderr, "Usage: %s <id> <name>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -288,7 +263,7 @@ void process_rename_playlist(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -308,7 +283,7 @@ void process_save_playlist(AppState *state, Command command)
 {
     if(linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <path>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -334,7 +309,7 @@ void process_create_playlist(AppState *state, Command command)
 {
     if (linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -374,7 +349,7 @@ void process_switch_playlist(AppState *state, Command command)
 {
     if (linked_list_size(command.tokens) != 2)
     {
-        fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
@@ -399,7 +374,7 @@ void process_use_playlist(AppState *state, Command command)
     Playlist *plist = linked_list_get(state->playlists, state->working_id);
     if (plist == audio_player_get_attached_playlist())
     {
-        fprintf(stderr, "Playlist %s is already attached\n", plist->name);
+        fprintf(stderr, "Bad argument count. See `help`.\n");
         return;
     }
 
