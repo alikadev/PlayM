@@ -20,7 +20,12 @@ typedef enum {
     FN_MUSIC,            // Print informations about the music
     FN_RENAME_MUSIC,     // Rename a music
     FN_RENAME_PLAYLIST,  // Rename the current playlist
-    FN_SAVE_PLAYLIST,  // Rename the current playlist
+    FN_SAVE_PLAYLIST,    // Rename the current playlist
+    FN_LIST_PLAYLISTS,   // Print all playlists
+    FN_CREATE_PLAYLIST,  // Create a playlist
+    FN_DESTROY_PLAYLIST, // Destroy a playlist
+    FN_SWITCH_PLAYLIST,  // Switch the current playing playlist
+    FN_USE_PLAYLIST,     // Switch the current working playlist
 } Function;
 
 Function str_to_function(char *functionName);

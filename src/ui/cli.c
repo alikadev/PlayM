@@ -26,6 +26,11 @@ static FunctionProcessor func_processor[] =
     [FN_RENAME_MUSIC]    = process_rename_music,
     [FN_RENAME_PLAYLIST] = process_rename_playlist,
     [FN_SAVE_PLAYLIST]   = process_save_playlist,
+    [FN_LIST_PLAYLISTS]  = process_list_playlists,
+    [FN_CREATE_PLAYLIST] = process_create_playlist,
+    [FN_DESTROY_PLAYLIST] = process_destroy_playlist,
+    [FN_SWITCH_PLAYLIST] = process_switch_playlist,
+    [FN_USE_PLAYLIST]    = process_use_playlist,
 };
 
 char *func_name[] = {
@@ -48,6 +53,11 @@ char *func_name[] = {
     [FN_RENAME_MUSIC]    = "ren",
     [FN_RENAME_PLAYLIST] = "renlist",
     [FN_SAVE_PLAYLIST]   = "save",
+    [FN_LIST_PLAYLISTS]  = "playlists",
+    [FN_CREATE_PLAYLIST] = "create",
+    [FN_DESTROY_PLAYLIST] = "destroy",
+    [FN_SWITCH_PLAYLIST] = "switch",
+    [FN_USE_PLAYLIST]    = "use",
 };
 
 char *func_desc[] = {
@@ -69,7 +79,12 @@ char *func_desc[] = {
     [FN_MUSIC]           = "Print informations about the music",
     [FN_RENAME_MUSIC]    = "Rename a music in the current playlist",
     [FN_RENAME_PLAYLIST] = "Rename the current playlist",
-    [FN_SAVE_PLAYLIST]   = "Save the current playlist"
+    [FN_SAVE_PLAYLIST]   = "Save the current playlist",
+    [FN_LIST_PLAYLISTS]  = "Print all playlists",
+    [FN_CREATE_PLAYLIST] = "Create a new playlist",
+    [FN_DESTROY_PLAYLIST] = "Destroy the working playlist",
+    [FN_SWITCH_PLAYLIST] = "Switch the working playlist",
+    [FN_USE_PLAYLIST]    = "Use the working playlist",
 };
 
 void cli_start(AppState *state)
@@ -80,7 +95,7 @@ void cli_start(AppState *state)
     audio_player_initialize();
     
     Playlist *playlist = playlist_create("DEFAULT");
-    state->working_playlist = playlist;
+    state->working_id = 0;
     state->playlists = linked_list_create(playlist);
     audio_player_attach_playlist(playlist);
 }

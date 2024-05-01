@@ -11,7 +11,7 @@ typedef struct {
     bool playing;
     int volume;
     LinkedList *playlists;
-    Playlist *working_playlist;
+    size_t working_id;
 } AppState;
 
 #endif // PM_UI_CLI_APPSTATE_H

@@ -43,6 +43,7 @@ void audio_player_attach_playlist(Playlist *playlist)
     if(!playlist)
         assert(0 && "Bad arg: audio_player_attach_playlist 'playlist' argument is NULL");
 
+    audioPlayer.currentMusic = 0;
     audioPlayer.playlist = playlist;
 }
 

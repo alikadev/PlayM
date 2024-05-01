@@ -42,5 +42,15 @@ Function str_to_function(char *functionName)
         return FN_RENAME_PLAYLIST;
     if (0 == strcmp(functionName, func_name[FN_SAVE_PLAYLIST]))
         return FN_SAVE_PLAYLIST;
+    if (0 == strcmp(functionName, func_name[FN_LIST_PLAYLISTS]))
+        return FN_LIST_PLAYLISTS;
+    if (0 == strcmp(functionName, func_name[FN_CREATE_PLAYLIST]))
+        return FN_CREATE_PLAYLIST;
+    if (0 == strcmp(functionName, func_name[FN_DESTROY_PLAYLIST]))
+        return FN_DESTROY_PLAYLIST;
+    if (0 == strcmp(functionName, func_name[FN_SWITCH_PLAYLIST]))
+        return FN_SWITCH_PLAYLIST;
+    if (0 == strcmp(functionName, func_name[FN_USE_PLAYLIST]))
+        return FN_USE_PLAYLIST;
     return FN_UNKNOWN;
 }

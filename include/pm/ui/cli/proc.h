@@ -26,5 +26,10 @@ void process_music(AppState *state, Command command);
 void process_rename_music(AppState *state, Command command);
 void process_rename_playlist(AppState *state, Command command);
 void process_save_playlist(AppState *state, Command command);
+void process_list_playlists(AppState *state, Command command);
+void process_create_playlist(AppState *state, Command command);
+void process_destroy_playlist(AppState *state, Command command);
+void process_switch_playlist(AppState *state, Command command);
+void process_use_playlist(AppState *state, Command command);
 
 #endif // PM_UI_CLI_PROC_H

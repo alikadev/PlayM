@@ -61,6 +61,16 @@ void process_help(AppState *state, Command command)
             func_name[FN_RENAME_PLAYLIST], func_desc[FN_RENAME_PLAYLIST]);
     printf("%s <name>: %s\n", 
             func_name[FN_SAVE_PLAYLIST], func_desc[FN_SAVE_PLAYLIST]);
+    printf("%s: %s\n", 
+            func_name[FN_LIST_PLAYLISTS], func_desc[FN_LIST_PLAYLISTS]);
+    printf("%s <name>: %s\n", 
+            func_name[FN_CREATE_PLAYLIST], func_desc[FN_CREATE_PLAYLIST]);
+    printf("%s <name>: %s\n", 
+            func_name[FN_DESTROY_PLAYLIST], func_desc[FN_DESTROY_PLAYLIST]);
+    printf("%s: %s\n", 
+            func_name[FN_SWITCH_PLAYLIST], func_desc[FN_SWITCH_PLAYLIST]);
+    printf("%s <name>: %s\n", 
+            func_name[FN_USE_PLAYLIST], func_desc[FN_USE_PLAYLIST]);
 }
 
 void process_play(AppState *state, Command command)
@@ -162,7 +172,8 @@ void process_load_music(AppState *state, Command command)
     Music *music = music_load_from_file(filename);
     if(!music)
         return;
-    playlist_insert_music(state->working_playlist, music);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    playlist_insert_music(plist, music);
 }
 
 void process_load_music_directory(AppState *state, Command command)
@@ -184,7 +195,8 @@ void process_load_music_directory(AppState *state, Command command)
     OrderedLinkedList *musics = music_load_directory(dirname, ext);
     if(!musics)
         return;
-    playlist_insert_music_list(state->working_playlist, musics);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    playlist_insert_music_list(plist, musics);
     // Only destroy the list because the musics are now in the playlist
     ordered_linked_list_destroy(musics);
 }
@@ -202,7 +214,8 @@ void process_unload_music(AppState *state, Command command)
     if (id == audio_player_current_music_id())
         audio_player_play_next();
 
-    Music *music = ordered_linked_list_remove(&state->working_playlist->list, id);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    Music *music = ordered_linked_list_remove(&plist->list, id);
     music_unload(music);
 }
 
@@ -210,14 +223,15 @@ void process_playlist(AppState *state, Command command)
 {
     (void) command;
 
-    printf("Playlist %s\n", state->working_playlist->name);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    printf("Playlist %s\n", plist->name);
     
-    for (size_t i = 0; i < playlist_size(state->working_playlist); ++i)
+    for (size_t i = 0; i < playlist_size(plist); ++i)
     {
         printf("%3lu%c  %s\n", 
             i + 1, 
             (audio_player_current_music_id() == i) ? '*' : '.',
-            playlist_get_by_order(state->working_playlist, i)->name);
+            playlist_get_by_order(plist, i)->name);
     }
 }
 
@@ -257,8 +271,9 @@ void process_rename_music(AppState *state, Command command)
     char *name = linked_list_get(command.tokens, 2);
 
     // Get music
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
     Music *music = (Music*)ordered_linked_list_get(
-            state->working_playlist->list, id);
+            plist->list, id);
     assert(music && "Internal error: Music is NULL");
 
     // Rename music
@@ -281,10 +296,11 @@ void process_rename_playlist(AppState *state, Command command)
     char *name = linked_list_get(command.tokens, 1);
 
     // Rename playlist
-    free(state->working_playlist->name);
-    state->working_playlist->name = malloc(strlen(name) + 1);
-    assert(state->working_playlist->name && "Internal error: malloc returned NULL");
-    strcpy(state->working_playlist->name, name);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    free(plist->name);
+    plist->name = malloc(strlen(name) + 1);
+    assert(plist->name && "Internal error: malloc returned NULL");
+    strcpy(plist->name, name);
 }
 
 
@@ -298,5 +314,97 @@ void process_save_playlist(AppState *state, Command command)
 
     char *path = linked_list_get(command.tokens, 1);
 
-    playlist_save_to_m3u(state->working_playlist, path);
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    playlist_save_to_m3u(plist, path);
 }
+
+void process_list_playlists(AppState *state, Command command)
+{
+    (void) command;
+    LinkedList *it = state->playlists;
+    while(it)
+    {
+        Playlist *plist = (Playlist*) it->elem;
+        printf("- %s\n", plist->name);
+        it = it->next;
+    }
+}
+
+void process_create_playlist(AppState *state, Command command)
+{
+    if (linked_list_size(command.tokens) != 2)
+    {
+        fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
+        return;
+    }
+
+    const char *name = linked_list_get(command.tokens, 1);
+
+    Playlist *new_plist = playlist_create(name);
+    linked_list_insert(state->playlists, new_plist);
+
+    state->working_id = linked_list_size(state->playlists) - 1;
+}
+
+void process_destroy_playlist(AppState *state, Command command)
+{
+    (void) command;
+    if (state->working_id == 0)
+    {
+        fprintf(stderr, "Cannot destroy the default playlist\n");
+        return;
+    }
+
+    // Switch playlist if working playlist is attached playlist
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    if (audio_player_get_attached_playlist() == plist)
+    {
+        printf("Destroying playing playlist, playling playlist is now the default one\n");
+        audio_player_pause();
+        audio_player_attach_playlist(linked_list_get(state->playlists, 0));
+    }
+
+    playlist_destroy(plist);
+    linked_list_remove(&state->playlists, state->working_id);
+    state->working_id = 0;
+    printf("Done\n");
+}
+
+void process_switch_playlist(AppState *state, Command command)
+{
+    if (linked_list_size(command.tokens) != 2)
+    {
+        fprintf(stderr, "Usage: %s <name>\n", func_name[command.fn]);
+        return;
+    }
+
+    const char *name = linked_list_get(command.tokens, 1);
+    for (size_t id = 0; id < linked_list_size(state->playlists); ++id)
+    {
+        Playlist *plist = linked_list_get(state->playlists, id);
+        if (strcmp(plist->name, name) == 0)
+        {
+            state->working_id = id;
+            printf("Now switched to %s\n", name);
+            return;
+        }
+    }
+
+    fprintf(stderr, "Playlist `%s` not founded\n", name);
+}
+
+void process_use_playlist(AppState *state, Command command)
+{
+    (void) command;
+    Playlist *plist = linked_list_get(state->playlists, state->working_id);
+    if (plist == audio_player_get_attached_playlist())
+    {
+        fprintf(stderr, "Playlist %s is already attached\n", plist->name);
+        return;
+    }
+
+    audio_player_pause();
+    audio_player_attach_playlist(plist);
+    printf("Done\n");
+}
+
