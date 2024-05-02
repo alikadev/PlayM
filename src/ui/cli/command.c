@@ -79,12 +79,15 @@ void command_destroy(Command *command)
         assert(0 && "Bad arg: command_destroy 'command' argument is NULL!");
 
     // Free tokens
-    size_t i;
-    size_t size = linked_list_size(command->tokens);
-    for(i = 0; i < size; i++)
+    if (command->tokens) 
     {
-        free(linked_list_get(command->tokens, i));
+        size_t i;
+        size_t size = linked_list_size(command->tokens);
+        for(i = 0; i < size; i++)
+        {
+            free(linked_list_get(command->tokens, i));
+        }
+    
+        linked_list_destroy(command->tokens);
     }
-
-    linked_list_destroy(command->tokens);
 }

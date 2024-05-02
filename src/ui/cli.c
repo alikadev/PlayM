@@ -3,6 +3,8 @@
 #include <pm/ui/cli/func.h>
 #include <pm/audio.h>
 #include <pm/sys.h>
+#include <termios.h>
+#include <limits.h>
 
 #define INPUT_SIZE 512
 
@@ -10,7 +12,7 @@ Function functions[] =
 {
     {
         FN_NONE,
-        "", {0},
+        "NONE", {0},
         {0},
         process_none
     },
@@ -169,6 +171,39 @@ void cli_start(AppState *state)
     audio_player_attach_playlist(playlist);
 }
 
+static void get_input(char *buffer, size_t max_size)
+{
+    struct termios old, new;
+    char ch;
+    size_t it = 0;
+    
+    // Init Termios RAW
+    tcgetattr(0, &old);
+    new = old;
+    new.c_lflag &= ICANON;
+    new.c_lflag &= ECHO;
+    tcsetattr(0, TCSANOW, &new);
+
+    while (1)
+    {
+        if (it + 1 == max_size)
+            break;
+        
+        ch = getchar();
+        putc(ch, stdout);
+
+        if (ch == '\n')
+            break;
+        
+        buffer[it++] = ch;
+    }
+
+    // Reset Termios to origin
+    tcsetattr(0, TCSANOW, &old);
+
+    buffer[it] = '\0';
+}
+
 void cli_run(AppState *state)
 {
     char input[INPUT_SIZE] = {0};
@@ -176,23 +211,19 @@ void cli_run(AppState *state)
     while (state->running)
     {
         printf("> ");
-        scanf(" %[^\n]", input);
+        get_input(input, INPUT_SIZE - 1);
 
         Command command;
         command_create(&command, input);
 
         Function *fn;
-        if (linked_list_size(command.tokens) == 0)
+        if (!command.tokens)
             fn = &functions[0];
         else
             fn = str_to_function(
                     linked_list_get(command.tokens, 0),
                     functions,
                     sizeof functions / sizeof *functions);
-        
-        if (!fn)
-            fn = &functions[1];
-
         fn->processor(state, command);
         command_destroy(&command);
     }
