@@ -4,7 +4,16 @@
 #include <pm/audio.h>
 #include <pm/sys.h>
 #include <termios.h>
-#include <limits.h>
+#include <dirent.h>
+#include <string.h>
+#include <wordexp.h>
+#include <errno.h>
+#ifdef __linux__
+#   include <linux/limits.h>
+#else
+#   include <sys/syslimits.h>
+#endif
+
 
 #define INPUT_SIZE 512
 
@@ -171,11 +180,41 @@ void cli_start(AppState *state)
     audio_player_attach_playlist(playlist);
 }
 
+static void list_dir(char *path)
+{
+    wordexp_t result;
+    wordexp(path, &result, 0);
+    const char *real_path = result.we_wordv[0];
+    if (!real_path)
+    {
+        fprintf(stderr, "Path must not be empty\n");
+        return;
+    }
+    DIR *dir = opendir(real_path);
+    if (!dir)
+    {
+        fprintf(stderr, "Fail to open directory `%s`: %s\n",
+                real_path, strerror(errno));
+        return;
+    }
+ 
+    struct dirent *ent;
+    while ((ent = readdir(dir)))
+    {
+        printf("- %c %s\n",
+                ent->d_type == DT_DIR ? 'D' :
+                    ent->d_type == DT_REG ? 'F' :
+                    'O',
+                ent->d_name);
+    }
+}
+
 static void get_input(char *buffer, size_t max_size)
 {
+    char path[PATH_MAX];
     struct termios old, new;
     char ch;
-    size_t it = 0;
+    size_t it = 0, pit = 0;
     
     // Init Termios RAW
     tcgetattr(0, &old);
@@ -195,6 +234,37 @@ static void get_input(char *buffer, size_t max_size)
         if (ch == '\n')
             break;
         
+        if (ch == 127)
+        {
+            if (pit > 0)
+                pit--;
+            if (it > 0)
+            {
+                it--;
+
+                tcsetattr(0, TCSANOW, &old);
+                printf("\b \b");
+                tcgetattr(0, &old);
+                new = old;
+                new.c_lflag &= ICANON;
+                new.c_lflag &= ECHO;
+                tcsetattr(0, TCSANOW, &new);
+            }
+            continue;
+        }
+        if (ch == '\t')
+        {
+            path[pit] = '\0';
+            printf("\n");
+            list_dir(path);
+            printf("> %.*s", (int)it, buffer);
+            continue;
+        }
+        if (ch == ' ')
+            pit = 0;
+        else
+            path[pit++] = ch;
+        
         buffer[it++] = ch;
     }
 
@@ -212,10 +282,9 @@ void cli_run(AppState *state)
     {
         printf("> ");
         get_input(input, INPUT_SIZE - 1);
-
+        printf("INPUT %s\n", input);
         Command command;
         command_create(&command, input);
-
         Function *fn;
         if (!command.tokens)
             fn = &functions[0];
@@ -224,6 +293,8 @@ void cli_run(AppState *state)
                     linked_list_get(command.tokens, 0),
                     functions,
                     sizeof functions / sizeof *functions);
+        if (!fn)
+            fn = &functions[1];
         fn->processor(state, command);
         command_destroy(&command);
     }
