@@ -8,6 +8,7 @@
 #include <errno.h> // errno
 #include <assert.h> // assert()
 #include <string.h> // strerror(), strcpy(), strlen() 
+#include <wordexp.h>
 
 extern int errno;
 
@@ -19,12 +20,23 @@ extern int errno;
  */
 Music *music_load_from_file(char *filename)
 {
+    // Get real path
+    wordexp_t result;
+    wordexp(filename, &result, 0);
+    const char *real_path = result.we_wordv[0];
+    if (!real_path)
+    {
+        fprintf(stderr, "Path must not be empty\n");
+        return NULL;
+    }
+    
+    // Allocate 
     Music *music = malloc(sizeof *music);
     if(!music)
         assert(0 && strerror(errno));
 
     // Load music
-    music->sample = Mix_LoadMUS(filename);
+    music->sample = Mix_LoadMUS(real_path);
     if(!music->sample)
     {
         printf("Fail to load the music: %s\n", SDL_GetError());
@@ -33,7 +45,7 @@ Music *music_load_from_file(char *filename)
     }
     
     // Copy filename
-    music->filename = malloc(strlen(filename) + 1);
+    music->filename = malloc(strlen(real_path) + 1);
     if(!music->filename)
     {
         printf("Fail to allocate the music: %s\n", strerror(errno));
@@ -54,17 +66,28 @@ Music *music_load_from_file(char *filename)
         free(music);
         return NULL;
     }
-    strcpy(music->name, filename);
+    strcpy(music->name, real_path);
 
     return music;
 }
 
 OrderedLinkedList *music_load_directory(char *dirname, char *ext)
 {
+    // Get real path
+    wordexp_t result;
+    wordexp(dirname, &result, 0);
+    const char *real_path = result.we_wordv[0];
+    if (!real_path)
+    {
+        fprintf(stderr, "Path must not be empty\n");
+        return NULL;
+    }
+
+    // Load directory
     OrderedLinkedList *musicList = NULL;
     DIR *d;
     struct dirent *dir;
-    d = opendir(dirname);
+    d = opendir(real_path);
     if (!d)
     {
         printf("  Fail to open the directoy: %s\n", strerror(errno));
@@ -77,12 +100,18 @@ OrderedLinkedList *music_load_directory(char *dirname, char *ext)
         char *dot = strrchr(dir->d_name, '.');
         if ((dot && (strcmp(dot+1, ext) == 0)) || strcmp(ext, "*") == 0)
         {
-            char *filename = malloc(strlen(dirname) + strlen(dir->d_name) + 2);
-            strcpy(filename, dirname);
+            char *filename = malloc(strlen(real_path) + strlen(dir->d_name) + 2);
+            strcpy(filename, real_path);
             strcat(filename, "/");
             strcat(filename, dir->d_name);
             printf("  Loading %s\n", filename);
             Music *music = music_load_from_file(filename);
+            if (!music)
+            {
+                printf("Fail to load music: %s\n", strerror(errno));
+                free(filename);
+                return NULL;
+            }
             if(musicList)
                 ordered_linked_list_insert(&musicList, music);
             else
