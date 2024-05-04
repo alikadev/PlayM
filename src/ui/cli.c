@@ -211,10 +211,10 @@ static void list_dir(char *path)
 
 static void get_input(char *buffer, size_t max_size)
 {
-    char path[PATH_MAX];
+    char *path;
     struct termios old, new;
     char ch;
-    size_t it = 0, pit = 0;
+    size_t it = 0;
     
     // Init Termios RAW
     tcgetattr(0, &old);
@@ -229,18 +229,16 @@ static void get_input(char *buffer, size_t max_size)
             break;
         
         ch = getchar();
-        putc(ch, stdout);
 
         if (ch == '\n')
             break;
         
-        if (ch == 127)
+        if (ch == 0x7F)
         {
-            if (pit > 0)
-                pit--;
             if (it > 0)
             {
                 it--;
+                buffer[it] = '\0';
 
                 tcsetattr(0, TCSANOW, &old);
                 printf("\b \b");
@@ -254,18 +252,21 @@ static void get_input(char *buffer, size_t max_size)
         }
         if (ch == '\t')
         {
-            path[pit] = '\0';
+            path = buffer + it;
+            while (*path != ' ' && path > buffer)
+                path--;
+
             printf("\n");
             list_dir(path);
             printf("> %.*s", (int)it, buffer);
             continue;
         }
-        if (ch == ' ')
-            pit = 0;
-        else
-            path[pit++] = ch;
-        
-        buffer[it++] = ch;
+
+        if (ch >= 0x20 && ch < 0x7F)
+        {
+            putc(ch, stdout);
+            buffer[it++] = ch;
+        }
     }
 
     // Reset Termios to origin
@@ -282,7 +283,6 @@ void cli_run(AppState *state)
     {
         printf("> ");
         get_input(input, INPUT_SIZE - 1);
-        printf("INPUT %s\n", input);
         Command command;
         command_create(&command, input);
         Function *fn;
