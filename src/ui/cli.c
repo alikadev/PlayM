@@ -283,6 +283,7 @@ static void get_input(char *buffer, size_t max_size)
     tcsetattr(0, TCSANOW, &old);
 
     buffer[it] = '\0';
+    printf("\n");
 }
 
 void cli_run(AppState *state)
