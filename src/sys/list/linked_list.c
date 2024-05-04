@@ -1,8 +1,8 @@
 #include <pm/sys.h>
+#include <pm/sys/asserts.h>
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 LinkedList *linked_list_create(void *data)
 {
@@ -19,8 +19,7 @@ LinkedList *linked_list_create(void *data)
 
 void linked_list_destroy(LinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: linked_list_destroy 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     if (list->next)
         linked_list_destroy(list->next);
@@ -29,8 +28,7 @@ void linked_list_destroy(LinkedList *list)
 
 void linked_list_destroy_purge(LinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: linked_list_destroy_purge 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     free(list->elem);
     
@@ -41,8 +39,7 @@ void linked_list_destroy_purge(LinkedList *list)
 
 void linked_list_insert(LinkedList *list, void *data)
 {
-    if(!list)
-        assert(0 && "Bad arg: linked_list_insert 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     LinkedList *new = linked_list_create(data);
     LinkedList *node = list;
@@ -53,14 +50,9 @@ void linked_list_insert(LinkedList *list, void *data)
 
 void *linked_list_remove(LinkedList **pList, size_t item)
 {
-    if(!pList)
-        assert(0 && "Bad arg: linked_list_remove 'pList' argument is NULL!");
-
-    if(!*pList)
-        assert(0 && "Bad arg: linked_list_remove 'pList' argument point to NULL!");
-
-    if(linked_list_size(*pList) <= item)
-        assert(0 && "Out of bounce check: linked_list_remove 'item' is greater than pList size");
+    ARG_ASSERT(pList);
+    ARG_ASSERT(*pList);
+    OUT_OF_BOUNCE_ASSERT(item, linked_list_size(*pList));
 
     // Get the node to destroy and unlinked it
     LinkedList *nodeToFree = NULL;
@@ -86,8 +78,7 @@ void *linked_list_remove(LinkedList **pList, size_t item)
 
 size_t linked_list_size(LinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: linked_list_size 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     size_t count = 1;
     LinkedList *node = list;
@@ -103,11 +94,8 @@ size_t linked_list_size(LinkedList *list)
 
 void *linked_list_get(LinkedList *list, size_t item)
 {
-    if(!list)
-        assert(0 && "Bad arg: linked_list_get 'list' argument is NULL!");
-
-    if(linked_list_size(list) <= item)
-        assert(0 && "Out of bounce check: linked_list_get 'item' is greater than list size");
+    ARG_ASSERT(list);
+    OUT_OF_BOUNCE_ASSERT(item, linked_list_size(list));
 
     for (unsigned i = 0; i < item; i++)
         list = list->next;

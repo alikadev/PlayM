@@ -1,6 +1,7 @@
 #include <pm/ui/cli.h>
 #include <pm/ui/cli/proc.h>
 #include <pm/ui/cli/func.h>
+#include <pm/sys/asserts.h>
 #include <pm/audio.h>
 #include <pm/sys.h>
 #include <termios.h>
@@ -168,6 +169,8 @@ size_t function_cnt = 0;
 
 void cli_start(AppState *state)
 {
+    ARG_ASSERT(state);
+
     function_cnt = sizeof functions / sizeof *functions;
     /* Initialzation */
     signal(SIGINT, SIG_IGN);
@@ -182,6 +185,9 @@ void cli_start(AppState *state)
 
 static void list_dir(char *path)
 {
+    ARG_ASSERT(path);
+
+    // Get `real path`
     wordexp_t result;
     wordexp(path, &result, 0);
     const char *real_path = result.we_wordv[0];
@@ -190,6 +196,7 @@ static void list_dir(char *path)
         fprintf(stderr, "Path must not be empty\n");
         return;
     }
+    
     DIR *dir = opendir(real_path);
     if (!dir)
     {
@@ -211,6 +218,9 @@ static void list_dir(char *path)
 
 static void get_input(char *buffer, size_t max_size)
 {
+    ARG_ASSERT(buffer);
+    ARG_ASSERT(max_size > 0);
+
     char *path;
     struct termios old, new;
     char ch;
@@ -277,6 +287,8 @@ static void get_input(char *buffer, size_t max_size)
 
 void cli_run(AppState *state)
 {
+    ARG_ASSERT(state);
+
     char input[INPUT_SIZE] = {0};
     
     while (state->running)
@@ -302,6 +314,7 @@ void cli_run(AppState *state)
 
 void cli_stop(AppState *state)
 {
+    ARG_ASSERT(state);
     audio_player_halt_music(); 
     audio_player_detach_playlist();
 

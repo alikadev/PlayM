@@ -1,21 +1,20 @@
 #include <pm/audio/playlist.h>
+#include <pm/sys/asserts.h>
 
-#include <assert.h> // assert()
-#include <string.h> // strerror()
-#include <errno.h> // errno
-#include <stdlib.h> // malloc(), free()
+#include <string.h>
+#include <errno.h> 
+#include <stdlib.h>
 
 extern int errno;
 
 Playlist *playlist_create(const char *name)
 {
+    ARG_ASSERT(name);
     Playlist *playlist = malloc(sizeof *playlist);
-    if(!playlist)
-        assert(0 && strerror(errno));
+    ALLOC_ASSERT(playlist);
 
     playlist->name = malloc(strlen(name) + 1);
-    if(!playlist->name)
-        assert(0 && strerror(errno));
+    ALLOC_ASSERT(playlist->name);
     strcpy(playlist->name, name);
 
     playlist->list = NULL;
@@ -24,8 +23,7 @@ Playlist *playlist_create(const char *name)
 
 void playlist_destroy(Playlist *playlist)
 {
-    if(!playlist)
-        assert(0 && "Bad arg: playlist_destroy 'playlist' argument is NULL");
+    ARG_ASSERT(playlist);
 
     if(playlist->name)
         free(playlist->name);
@@ -38,11 +36,8 @@ void playlist_destroy(Playlist *playlist)
 
 void playlist_insert_music(Playlist *playlist, Music *music)
 {
-    if(!playlist)
-        assert(0 && "Bad arg: playlist_insert_music 'playlist' argument is NULL");
-
-    if(!music)
-        assert(0 && "Bad arg: playlist_insert_music 'music' argument is NULL");
+    ARG_ASSERT(playlist);
+    ARG_ASSERT(music);
 
     if(!playlist->list)
     {
@@ -54,6 +49,9 @@ void playlist_insert_music(Playlist *playlist, Music *music)
 
 void playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics)
 {
+    ARG_ASSERT(playlist);
+    ARG_ASSERT(musics);
+
     for (unsigned i = 0; i < ordered_linked_list_size(musics); i++)
     {
         playlist_insert_music(playlist, ordered_linked_list_get(musics, i));
@@ -62,8 +60,7 @@ void playlist_insert_music_list(Playlist *playlist, OrderedLinkedList *musics)
 
 size_t playlist_size(Playlist *playlist)
 {
-    if(!playlist)
-        assert(0 && "Bad arg: playlist_size 'playlist' argument is NULL");
+    ARG_ASSERT(playlist);
 
     if(playlist->list == NULL)
         return 0;
@@ -73,14 +70,17 @@ size_t playlist_size(Playlist *playlist)
 
 Music *playlist_get_by_order(Playlist *playlist, size_t number)
 {
-    if(playlist_size(playlist) <= number)
-        assert(0 && "Out of bounce: playlist_size 'number' is greater than playlist size");
+    ARG_ASSERT(playlist);
+    OUT_OF_BOUNCE_ASSERT(number, playlist_size(playlist));
 
     return (Music *)ordered_linked_list_get(playlist->list, number);
 }
 
 int playlist_save_to_m3u(Playlist *playlist, char *filename)
 {
+    ARG_ASSERT(playlist);
+    ARG_ASSERT(filename);
+
     FILE *file = fopen(filename, "wb");
     if(!file)
         return errno;

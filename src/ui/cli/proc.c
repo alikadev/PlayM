@@ -1,17 +1,10 @@
 #include <pm/ui/cli/proc.h>
 #include <pm/ui/cli/func.h>
 #include <pm/audio.h>
-#include <assert.h>
-#include <assert.h>
+#include <pm/sys/asserts.h>
 
 extern Function functions[];
 extern size_t function_cnt;
-
-#define CHECK_PLAYLIST(playlist);                   \
-if (playlist_size(playlist) == 0){                  \
-    printf("There's no music in the playlist\n");   \
-    return;                                         \
-}
 
 void process_none(AppState *state, Command command)
 {
@@ -69,6 +62,7 @@ void process_pause(AppState *state, Command command)
 
 void process_volume(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -138,6 +132,7 @@ void process_start(AppState *state, Command command)
 
 void process_load_music(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -153,6 +148,7 @@ void process_load_music(AppState *state, Command command)
 
 void process_load_music_directory(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     size_t tokc = linked_list_size(command.tokens);
     if(tokc != 2 && tokc != 3)
     {
@@ -178,6 +174,7 @@ void process_load_music_directory(AppState *state, Command command)
 
 void process_unload_music(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -197,6 +194,7 @@ void process_unload_music(AppState *state, Command command)
 void process_playlist(AppState *state, Command command)
 {
     (void) command;
+    ARG_ASSERT(state);
 
     Playlist *plist = linked_list_get(state->playlists, state->working_id);
     printf("Playlist %s\n", plist->name);
@@ -235,6 +233,7 @@ void process_music(AppState *state, Command command)
 
 void process_rename_music(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 3)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -249,18 +248,23 @@ void process_rename_music(AppState *state, Command command)
     Playlist *plist = linked_list_get(state->playlists, state->working_id);
     Music *music = (Music*)ordered_linked_list_get(
             plist->list, id);
-    assert(music && "Internal error: Music is NULL");
+    if (!music)
+    {
+        fprintf(stderr, "Music-ID was not found in the working playlist\n");
+        return;
+    }
 
     // Rename music
     if(music->name)
         free(music->name);
     music->name = malloc(strlen(name) + 1);
-    assert(music->name && "Internal error");
+    ALLOC_ASSERT(music->name);
     strcpy(music->name, name);
 }
 
 void process_rename_playlist(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -274,13 +278,14 @@ void process_rename_playlist(AppState *state, Command command)
     Playlist *plist = linked_list_get(state->playlists, state->working_id);
     free(plist->name);
     plist->name = malloc(strlen(name) + 1);
-    assert(plist->name && "Internal error: malloc returned NULL");
+    ALLOC_ASSERT(plist->name);
     strcpy(plist->name, name);
 }
 
 
 void process_save_playlist(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if(linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -296,6 +301,7 @@ void process_save_playlist(AppState *state, Command command)
 void process_list_playlists(AppState *state, Command command)
 {
     (void) command;
+    ARG_ASSERT(state);
     LinkedList *it = state->playlists;
     while(it)
     {
@@ -307,6 +313,7 @@ void process_list_playlists(AppState *state, Command command)
 
 void process_create_playlist(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if (linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -324,6 +331,7 @@ void process_create_playlist(AppState *state, Command command)
 void process_destroy_playlist(AppState *state, Command command)
 {
     (void) command;
+    ARG_ASSERT(state);
     if (state->working_id == 0)
     {
         fprintf(stderr, "Cannot destroy the default playlist\n");
@@ -347,6 +355,7 @@ void process_destroy_playlist(AppState *state, Command command)
 
 void process_switch_playlist(AppState *state, Command command)
 {
+    ARG_ASSERT(state);
     if (linked_list_size(command.tokens) != 2)
     {
         fprintf(stderr, "Bad argument count. See `help`.\n");
@@ -371,6 +380,7 @@ void process_switch_playlist(AppState *state, Command command)
 void process_use_playlist(AppState *state, Command command)
 {
     (void) command;
+    ARG_ASSERT(state);
     Playlist *plist = linked_list_get(state->playlists, state->working_id);
     if (plist == audio_player_get_attached_playlist())
     {

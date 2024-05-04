@@ -3,17 +3,17 @@
 #include <stdbool.h>
 #include <time.h>
 #include <signal.h>
-#include <assert.h>
 
 #include <pm/ui/cli.h>
 #include <pm/sys.h>
 #include <pm/audio.h>
+#include <pm/sys/asserts.h>
 
 bool parse_args(int argc, const char *argv[])
 {
-    assert(argc > 0 && "Must have at least 1 argument");
-    assert(argv && "argv must not be NULL");
-    assert(*argv && "Must have at least 1 argument in ARGV");
+    ARG_ASSERT(argc > 0);
+    ARG_ASSERT(argv);
+    ARG_ASSERT(argv[0]);
 
     const char *program = *argv;
     for (int i = 1; i < argc; ++i)

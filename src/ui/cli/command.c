@@ -1,9 +1,9 @@
 #include <pm/ui/cli/command.h>
 #include <pm/audio.h>
+#include <pm/sys/asserts.h>
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <assert.h>
 #include <string.h>
 
 #define ARGOF(input,fn) (input + strlen(func_name[fn]) + 1)
@@ -13,10 +13,8 @@ extern char *func_desc[];
 
 void command_create(Command *command, char *request)
 {
-    if(!command)
-        assert(0 && "Bad arg: command_create 'command' argument is NULL!");
-    if(!request)
-        assert(0 && "Bad arg: command_create 'request' argument is NULL!");
+    ARG_ASSERT(command);
+    ARG_ASSERT(request);
 
     command->tokens = NULL;
 
@@ -75,8 +73,7 @@ void command_create(Command *command, char *request)
 
 void command_destroy(Command *command)
 {
-    if(!command)
-        assert(0 && "Bad arg: command_destroy 'command' argument is NULL!");
+    ARG_ASSERT(command);
 
     // Free tokens
     if (command->tokens) 

@@ -1,10 +1,11 @@
 #include <pm/sys.h>
-
+#include <pm/sys/asserts.h>
 #include <ctype.h>
 #include <stddef.h>
 
 char *ignore_spaces(char *str)
 {
+    ARG_ASSERT(str);
     while (isspace(*str))
         str++;
     return str;
@@ -17,6 +18,7 @@ char *ignore_spaces(char *str)
  */
 char *next_token(char *str)
 {
+    ARG_ASSERT(str);
     while (*str)
     {
         if (!isspace(*str))
