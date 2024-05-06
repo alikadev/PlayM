@@ -6,7 +6,7 @@ INCLUDE_DIR := include
 PLAYM       := playm
 PLAYM_MAJOR := 0
 PLAYM_MINOR := 1
-PLAYM_PATCH := 6
+PLAYM_PATCH := 8
 SRC         := $(shell find $(SRC_DIR) -name '*.c')
 MIXERFLAGS  := $(shell pkg-config --cflags --libs SDL2_mixer)
 CFLAGS      := -Werror -Wextra -Wall -std=c99 

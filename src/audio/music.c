@@ -55,11 +55,11 @@ Music *music_load_from_file(char *filename)
         free(music);
         return NULL;
     }
-    strcpy(music->filename, filename);
+    strcpy(music->filename, real_path);
     
     // Copy music name (filename without the extension)
-    *strrchr(filename, '.') = '\0';
-    music->name = malloc(strlen(filename) + 1);
+    *strrchr(real_path, '.') = '\0';
+    music->name = malloc(strlen(real_path) + 1);
     if(!music->filename)
     {
         printf("Fail to allocate the name: %s\n", strerror(errno));

@@ -146,7 +146,6 @@ int playlist_load_m3u(Playlist **p_plist, char *filename)
     while (!feof(file))
     {
         fgets(buff, 512, file);
-        printf("%s", buff);
         if (*buff == '\r' || *buff == '\n' || !*buff)
             continue;
         else if (memcmp("#PLAYLIST", buff, strlen("#PLAYLIST")) == 0)
@@ -178,7 +177,6 @@ int playlist_load_m3u(Playlist **p_plist, char *filename)
             if (end) *end = '\0';
 
             // Create music
-            printf("Buff: %s\n", buff);
             Music *m = music_load_from_file(buff);
             if (!m) { status = ENOENT; goto failure; }
             playlist_insert_music(plist, m);
