@@ -18,6 +18,7 @@ typedef enum {
     FN_START,            // Start the first music
     FN_LOAD_MUSIC,       // Load a single music
     FN_LOAD_MUSIC_DIR,   // Load a directory of music
+    FN_LOAD_M3U,         // Load a M3U playlist
     FN_UNLOAD_MUSIC,     // Unload a music from the current playlist
     FN_PLAYLIST,         // Print informations about the playlist
     FN_MUSIC,            // Print informations about the music

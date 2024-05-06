@@ -3,7 +3,9 @@
 
 #include <string.h>
 #include <errno.h> 
+#include <stdio.h>
 #include <stdlib.h>
+#include <wordexp.h>
 
 extern int errno;
 
@@ -81,7 +83,17 @@ int playlist_save_to_m3u(Playlist *playlist, char *filename)
     ARG_ASSERT(playlist);
     ARG_ASSERT(filename);
 
-    FILE *file = fopen(filename, "wb");
+    // Get `real path`
+    wordexp_t result;
+    wordexp(filename, &result, 0);
+    const char *real_path = result.we_wordv[0];
+    if (!real_path)
+    {
+        fprintf(stderr, "Path must not be empty\n");
+        return ENOENT;
+    }
+
+    FILE *file = fopen(real_path, "wb");
     if(!file)
         return errno;
 
@@ -96,7 +108,95 @@ int playlist_save_to_m3u(Playlist *playlist, char *filename)
         fprintf(file, "%s\r\n", music->filename);
     }
 
+    fprintf(file, "\r\n");
+
     fclose(file);
 
     return 0;
+}
+
+int playlist_load_m3u(Playlist **p_plist, char *filename)
+{
+    ARG_ASSERT(p_plist);
+    ARG_ASSERT(filename);
+
+    int status = 0;
+    char buff[512] = {0};
+    Playlist *plist;
+
+    // Get `real path`
+    wordexp_t result;
+    wordexp(filename, &result, 0);
+    const char *real_path = result.we_wordv[0];
+    if (!real_path)
+        return ENOENT;
+
+    // Open file
+    FILE *file = fopen(real_path, "rb");
+    if (!file)
+        return errno;
+
+    // Check M3U header
+    fgets(buff, 512, file);
+    if (memcmp("#EXTM3U", buff, strlen("#EXTM3U")) != 0)
+        return EFTYPE;
+
+    // Create and fill output playlist
+    plist = playlist_create("Unnamed");
+    while (!feof(file))
+    {
+        fgets(buff, 512, file);
+        printf("%s", buff);
+        if (*buff == '\r' || *buff == '\n' || !*buff)
+            continue;
+        else if (memcmp("#PLAYLIST", buff, strlen("#PLAYLIST")) == 0)
+        {
+            // Skip `#PLAYLIST:`
+            char *it = buff + strlen("#PLAYLIST") + 1;
+            char *end = strchr(buff, '\r');
+            if (!end) end = strchr(buff, '\n');
+            if (!end) end = buff + strlen(buff) + 1;
+            if (end) *end = '\0';
+            // Rename playlist with new name
+            free(plist->name);
+            plist->name = malloc(strlen(it) + 1);
+            ALLOC_ASSERT(plist->name);
+            strcpy(plist->name, it);
+            continue;
+        }
+        else if (memcmp("#EXTINF", buff, strlen("#EXTINF")) == 0)
+        {
+            // TODO: Add suport for track name vs track path
+            // Read music path
+            if (feof(file)) { status = EFTYPE; goto failure; }
+            fgets(buff, 512, file);
+ 
+            // Replace CR/LF/NULL = \0
+            char *end = strchr(buff, '\r');
+            if (!end) end = strchr(buff, '\n');
+            if (!end) end = buff + strlen(buff) + 1;
+            if (end) *end = '\0';
+
+            // Create music
+            printf("Buff: %s\n", buff);
+            Music *m = music_load_from_file(buff);
+            if (!m) { status = ENOENT; goto failure; }
+            playlist_insert_music(plist, m);
+            if (feof(file)) break;
+            continue;
+        }
+        else 
+        {
+            printf("Unexpected: %s\n", buff);
+            status = EFTYPE;
+            goto failure;
+        }
+    }
+
+    *p_plist = plist;
+    return 0;
+
+failure:
+    playlist_destroy(plist);
+    return status;
 }

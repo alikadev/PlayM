@@ -93,6 +93,12 @@ Function functions[] =
         process_load_music
     },
     {
+        FN_LOAD_M3U,
+        "load", "<path>",
+        "Load a M3U playlist",
+        process_load_m3u,
+    },
+    {
         FN_UNLOAD_MUSIC,
         "umus", "<path>",
         "Unload a music",

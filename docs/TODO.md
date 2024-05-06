@@ -2,7 +2,8 @@
 
 ## For 0.1.8
 
-- [ ] Add m3u loading
+- [x] Add m3u loading
+- [ ] Solve heap corruption
 
 ## During 0.1.8
 

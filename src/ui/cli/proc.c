@@ -172,6 +172,25 @@ void process_load_music_directory(AppState *state, Command command)
     ordered_linked_list_destroy(musics);
 }
 
+void process_load_m3u(AppState *state, Command command)
+{
+    ARG_ASSERT(state);
+    if(linked_list_size(command.tokens) != 2)
+    {
+        fprintf(stderr, "Bad argument count. See `help`.\n");
+        return;
+    }
+    char *filename = linked_list_get(command.tokens, 1);
+    Playlist *plist;
+    int status;
+    if ((status = playlist_load_m3u(&plist, filename)) != 0)
+    {
+        fprintf(stderr, "Fail to load the M3U playlist: %s\n",
+                strerror(status));
+        return;
+    }
+    linked_list_insert(state->playlists, plist);
+}
 void process_unload_music(AppState *state, Command command)
 {
     ARG_ASSERT(state);

@@ -18,6 +18,7 @@ void process_previous_music(AppState *state, Command command);
 void process_start(AppState *state, Command command);
 void process_load_music(AppState *state, Command command);
 void process_load_music_directory(AppState *state, Command command);
+void process_load_m3u(AppState *state, Command command);
 void process_unload_music(AppState *state, Command command);
 void process_playlist(AppState *state, Command command);
 void process_music(AppState *state, Command command);

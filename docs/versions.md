@@ -14,6 +14,7 @@ Play Music versions and releases. Here are all the versions of PlayM that have b
 - Rename command `load` to `lmus`
 - Rename command `list` to `plist`
 - Rename command `renlist` to `renplist`
+- Create command `load`
 - Relave path and path expression
 - Direcory listing when TAB
 
