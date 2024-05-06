@@ -1,9 +1,9 @@
 #include <pm/audio/audio_player.h>
 #include "audio_player_internal.h"
+#include <pm/sys/asserts.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-#include <assert.h> // assert()
 
 static AudioPlayer audioPlayer;
 
@@ -16,11 +16,10 @@ void audio_player_initialize(void)
            | MIX_INIT_OGG
            | MIX_INIT_MID
            | MIX_INIT_OPUS);
-    if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512) < 0)
-        assert(0 && SDL_GetError());
+    assert(Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 512) >= 0
+            && SDL_GetError());
 
-    if (Mix_AllocateChannels(1) < 0)
-        assert(0 && SDL_GetError());
+    assert(Mix_AllocateChannels(1) >= 0 && SDL_GetError());
 
     audioPlayer.playlist = NULL;
     audioPlayer.currentMusic = 0;
@@ -40,9 +39,9 @@ void audio_player_terminate(void)
 
 void audio_player_attach_playlist(Playlist *playlist)
 {
-    if(!playlist)
-        assert(0 && "Bad arg: audio_player_attach_playlist 'playlist' argument is NULL");
+    ARG_ASSERT(playlist);
 
+    audioPlayer.currentMusic = 0;
     audioPlayer.playlist = playlist;
 }
 
@@ -51,20 +50,25 @@ void audio_player_detach_playlist(void)
     audioPlayer.playlist = NULL;
 }
 
+Playlist *audio_player_get_attached_playlist()
+{
+    return audioPlayer.playlist;
+}
+
 void audio_player_play_music(void)
 {
     Music *music = playlist_get_by_order(audioPlayer.playlist, audioPlayer.currentMusic);
-    if (Mix_PlayMusic(music->sample, 0) < 0)
-        assert(0 && SDL_GetError());
+    assert(Mix_PlayMusic(music->sample, 0) >= 0
+            && SDL_GetError());
 }
 
 void audio_player_play(void)
 {
-    if(!audio_player_is_ready())
-        assert(0 && "Internal error: audio_player_play_first musicPlayer is not ready");
+    assert(audio_player_is_ready()
+            && "Internal error: audio_player_play_first musicPlayer is not ready");
 
-    if(!audioPlayer.playlist)
-        assert(0 && "Internal error: audio_player_play_first playlist is not attached");
+    assert(audioPlayer.playlist
+        && "Internal error: audio_player_play_first playlist is not attached");
 
     if(!audio_player_is_playing())
     {
@@ -76,11 +80,11 @@ void audio_player_play(void)
 
 void audio_player_play_first(void)
 {
-    if(!audio_player_is_ready())
-        assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
+    assert(audio_player_is_ready()
+            && "Internal error: audio_player_play_first audioPlayer is not ready");
 
-    if(!audioPlayer.playlist)
-        assert(0 && "Internal error: audio_player_play_first playlist is not attached");
+    assert(audioPlayer.playlist
+            && "Internal error: audio_player_play_first playlist is not attached");
 
     audioPlayer.currentMusic = 0;
     audio_player_play_music();
@@ -88,11 +92,11 @@ void audio_player_play_first(void)
 
 void audio_player_play_next(void)
 {
-    if(!audio_player_is_ready())
-        assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
+    assert(audio_player_is_ready()
+            && "Internal error: audio_player_play_first audioPlayer is not ready");
 
-    if(!audioPlayer.playlist)
-        assert(0 && "Internal error: audio_player_play_first playlist is not attached");
+    assert(audioPlayer.playlist
+            && "Internal error: audio_player_play_first playlist is not attached");
 
     audioPlayer.currentMusic++;
     audioPlayer.currentMusic %= playlist_size(audioPlayer.playlist);
@@ -101,11 +105,11 @@ void audio_player_play_next(void)
 
 void audio_player_play_prev(void)
 {
-    if(!audio_player_is_ready())
-        assert(0 && "Internal error: audio_player_play_first audioPlayer is not ready");
+    assert(audio_player_is_ready()
+            && "Internal error: audio_player_play_first audioPlayer is not ready");
 
-    if(!audioPlayer.playlist)
-        assert(0 && "Internal error: audio_player_play_first playlist is not attached");
+    assert(!audioPlayer.playlist
+            && "Internal error: audio_player_play_first playlist is not attached");
 
     if(audioPlayer.currentMusic == 0)
         audioPlayer.currentMusic = playlist_size(audioPlayer.playlist);

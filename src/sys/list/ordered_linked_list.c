@@ -1,17 +1,18 @@
 #include <pm/sys.h>
+#include <pm/sys/asserts.h>
 
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <assert.h>
 
 extern int errno;
 
 OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *, void *))
 {
+    ARG_ASSERT(compare);
+
     OrderedLinkedList *list = malloc(sizeof *list);
-    if(!list)
-        assert(0 && strerror(errno));
+    ALLOC_ASSERT(list);
 
     list->elem = data;
     list->next = NULL;
@@ -21,8 +22,7 @@ OrderedLinkedList *ordered_linked_list_create(void *data, int (*compare)(void *,
 
 void ordered_linked_list_destroy(OrderedLinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: ordered_linked_list_destroy 'list' argument is NULL!");
+    ARG_ASSERT(list);
         
     if(list->next)
         ordered_linked_list_destroy(list->next);
@@ -31,8 +31,7 @@ void ordered_linked_list_destroy(OrderedLinkedList *list)
 
 void ordered_linked_list_destroy_purge(OrderedLinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: ordered_linked_list_destroy_purge 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     free(list->elem);
 
@@ -43,15 +42,10 @@ void ordered_linked_list_destroy_purge(OrderedLinkedList *list)
 
 void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 {
-    if(!pList)
-        assert(0 && "Bad arg: ordered_linked_list_insert 'pList' argument is NULL!");
+    ARG_ASSERT(pList);
+    ARG_ASSERT(*pList);
     
-    // Get the current root
     OrderedLinkedList *node = *pList;
-    if(!node)
-        assert(0 && "Bad arg: ordered_linked_list_insert 'pList' argument reference to NULL!");
-
-    // Create the new node
     OrderedLinkedList *newNode = ordered_linked_list_create(data, node->compare);
 
     // Check if it fit in the first place
@@ -62,6 +56,7 @@ void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
         *pList = newNode;
         return;
     }
+
     // Ignore until the data fit (or the list ends)
     while (node->next != NULL)
     {
@@ -69,6 +64,7 @@ void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
         if (cmpNext > 0) break;
         node = node->next;
     }
+   
     // Insert the element
     newNode->next = node->next;
     node->next = newNode;
@@ -76,14 +72,9 @@ void ordered_linked_list_insert(OrderedLinkedList **pList, void *data)
 
 void *ordered_linked_list_remove(OrderedLinkedList **pList, size_t item)
 {
-    if(!pList)
-        assert(0 && "Bad arg: ordered_linked_list_remove 'pList' argument is NULL!");
-
-    if(!*pList)
-        assert(0 && "Bad arg: ordered_linked_list_remove 'pList' argument point to NULL!");
-
-    if(ordered_linked_list_size(*pList) <= item)
-        assert(0 && "Out of bounce check: ordered_linked_list_remove 'item' is greater than list size");
+    ARG_ASSERT(pList);
+    ARG_ASSERT(*pList);
+    OUT_OF_BOUNCE_ASSERT(item, ordered_linked_list_size(*pList));
 
     // Get the node to destroy and unlinked it
     OrderedLinkedList *nodeToFree;
@@ -109,8 +100,7 @@ void *ordered_linked_list_remove(OrderedLinkedList **pList, size_t item)
 
 size_t ordered_linked_list_size(OrderedLinkedList *list)
 {
-    if(!list)
-        assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
+    ARG_ASSERT(list);
 
     size_t count = 1;
     while(list->next)
@@ -124,14 +114,12 @@ size_t ordered_linked_list_size(OrderedLinkedList *list)
 
 void *ordered_linked_list_get(OrderedLinkedList *list, size_t item)
 {
-    if(!list)
-        assert(0 && "Bad arg: ordered_linked_list_insert 'list' argument is NULL!");
-
-    if(ordered_linked_list_size(list) <= item)
-        assert(0 && "Out of bounce check: ordered_linked_list_get 'item' is greater than list size");
+    ARG_ASSERT(list);
+    OUT_OF_BOUNCE_ASSERT(item, ordered_linked_list_size(list));
 
     for (unsigned i = 0; i < item; i++)
         list = list->next;
 
     return list->elem;
 }
+

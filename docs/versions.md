@@ -4,6 +4,25 @@ Play Music versions and releases. Here are all the versions of PlayM that have b
 
 ## Version list
 
+### 0.1.7 - Multi-playlist
+
+- Change most command descriptions
+- Create command `playlists`
+- Create command `create`
+- Create command `destroy`
+- Create command `use`
+- Rename command `load` to `lmus`
+- Rename command `list` to `plist`
+- Rename command `renlist` to `renplist`
+- Create command `load`
+- Relave path and path expression
+- Direcory listing when TAB
+
+### 0.1.6
+
+- Major codebase restructuration
+- Clean help message
+
 ### 0.1.5 (devel)
 
 - Change the default music name (remove extension)
